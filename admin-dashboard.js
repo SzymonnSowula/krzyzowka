@@ -77,15 +77,12 @@ function processData() {
     
     const avgTime = completedWords.length ? completedWords.reduce((a, b) => a + (b.durationSeconds || 0), 0) / completedWords.length : 0;
     const cleanSolves = completedWords.filter(w => w.cleanSolve).length;
+    const withHints = completedWords.length - cleanSolves;
     const cleanRatio = completedWords.length ? (cleanSolves / completedWords.length) * 100 : 0;
     
     document.getElementById('stats-grid').innerHTML = `
         <div class="stat-card">
-            <h3>Użytkownicy</h3>
-            <div class="stat-value">${users.length}</div>
-        </div>
-        <div class="stat-card">
-            <h3>Rozwiązane hasła</h3>
+            <h3>Rozwiązane h. (łącznie)</h3>
             <div class="stat-value">${completedWords.length}</div>
             <div class="stat-secondary">+ ${skippedWords.length} pominiętych</div>
         </div>
@@ -94,9 +91,14 @@ function processData() {
             <div class="stat-value">${avgTime.toFixed(1)}s</div>
         </div>
         <div class="stat-card">
-            <h3>Czyste rozwiązania</h3>
-            <div class="stat-value">${cleanRatio.toFixed(1)}%</div>
-            <div class="stat-secondary">Bez podpowiedzi i pomyłek</div>
+            <h3>Bez podpowiedzi</h3>
+            <div class="stat-value" style="color: var(--green);">${cleanSolves}</div>
+            <div class="stat-secondary">${cleanRatio.toFixed(1)}% rozwiązań czystych</div>
+        </div>
+        <div class="stat-card">
+            <h3>Z podpowiedzią</h3>
+            <div class="stat-value" style="color: var(--amber);">${withHints}</div>
+            <div class="stat-secondary">Rozwiązane przy użyciu hintu</div>
         </div>
     `;
 
@@ -114,6 +116,7 @@ function processData() {
             userId: uid,
             ageGroup: userAgeMap[uid] || '-',
             completed: uCompleted.length,
+            withHints: uCompleted.length - uClean,
             skipped: uSkipped.length,
             cleanRatio: uCleanRatio,
             avgTime: times.length ? times.reduce((a,b) => a+b, 0) / times.length : 0,
@@ -132,6 +135,7 @@ function processData() {
                 <td><strong>${u.userId}</strong></td>
                 <td>${u.ageGroup}</td>
                 <td>${u.completed}</td>
+                <td>${u.withHints}</td>
                 <td style="color: #ef4444; font-weight: bold;">${u.skipped}</td>
                 <td>${u.cleanRatio.toFixed(1)}%</td>
                 <td>${u.avgTime.toFixed(1)}s</td>
@@ -156,6 +160,7 @@ function processData() {
             category: cat,
             total: cTotal,
             completed: cCompleted.length,
+            withHints: cCompleted.length - cCompleted.filter(w => w.cleanSolve).length,
             skipped: cSkipped.length,
             accuracy: cTotal ? (cCompleted.length / cTotal) * 100 : 0,
             avgTime: cTimes.length ? cTimes.reduce((a,b) => a+b, 0) / cTimes.length : 0,
@@ -173,6 +178,7 @@ function processData() {
                 <td><span class="badge-cat badge-${(c.category || 'brak').toLowerCase()}">${c.category}</span></td>
                 <td>${c.total}</td>
                 <td>${c.completed}</td>
+                <td>${c.withHints}</td>
                 <td>${c.skipped}</td>
                 <td>${c.accuracy.toFixed(1)}%</td>
                 <td>${c.avgTime.toFixed(1)}</td>
@@ -239,6 +245,7 @@ function processData() {
             category: wData[0].kategoria || 'Brak',
             length: wData[0].length || 0,
             completed: wCompleted.length,
+            withHints: wCompleted.length - wCompleted.filter(w => w.cleanSolve).length,
             skipped: wSkipped.length,
             total: total,
             accuracy: total ? (wCompleted.length / total) * 100 : 0,
@@ -263,6 +270,7 @@ function processData() {
                 <td><span class="badge-cat badge-${(w.category || 'brak').toLowerCase()}">${w.category}</span></td>
                 <td>${w.length}</td>
                 <td>${w.completed}</td>
+                <td>${w.withHints}</td>
                 <td style="color: #ef4444; font-weight: bold;">${w.skipped}</td>
                 <td>${w.accuracy.toFixed(1)}%</td>
                 <td>${w.avgTime.toFixed(1)}s</td>

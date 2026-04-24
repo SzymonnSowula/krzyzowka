@@ -91,14 +91,18 @@ async function loadData() {
 function generateLevel() {
     console.log('Generating level...');
     try {
-        let pool = allData.filter(d => !usedWordsGlobal.has(d.odpowiedz));
-        if (pool.length < 15) {
-            usedWordsGlobal.clear();
-            pool = allData;
+        let selected;
+        
+        // Runda 1, 3, 5... (nieparzyste) -> pierwsze 10 haseł z bazy
+        // Runda 2, 4, 6... (parzyste) -> drugie 10 haseł z bazy
+        if (currentLevel % 2 !== 0) {
+            selected = allData.slice(0, 10);
+        } else {
+            selected = allData.slice(10, 20);
         }
         
-        pool.sort(() => Math.random() - 0.5);
-        const selected = pool.slice(0, 10);
+        // Tasujemy tylko kolejność wewnątrz wybranej dziesiątki
+        selected.sort(() => Math.random() - 0.5);
         
         words = selected.map((d, index) => ({
             id: index,
@@ -127,7 +131,9 @@ function generateLevel() {
 
         renderClueList();
 
-        document.getElementById('level-counter').innerText = currentLevel;
+        const levelCounters = document.querySelectorAll('.level-counter');
+        levelCounters.forEach(el => el.innerText = `${currentLevel} z 2`);
+        
         logAction('level_generated', { level: currentLevel, wordCount: words.length });
     } catch (err) {
         console.error('Error during generation:', err);
@@ -496,10 +502,27 @@ function checkCompletion() {
     
     if (allCorrect && words.length > 0) {
         setTimeout(() => {
-            alert('Gratulacje! Wszystkie hasła uzupełnione! 🎉');
-            currentLevel++;
-            generateLevel();
-        }, 500);
+            if (currentLevel === 1) {
+                alert('Świetnie! Zakończyłeś pierwszą rundę (1 z 2).\n\nZaraz rozpocznie się druga, ostatnia runda z nowymi hasłami.');
+                currentLevel++;
+                generateLevel();
+            } else if (currentLevel === 2) {
+                alert('DZIĘKUJEMY ZA UDZIAŁ W BADANIU!\n\nRozwiązałeś wszystkie przygotowane hasła. Twoje wyniki zostały bezpiecznie zapisane.\nMożesz teraz zamknąć tę stronę.');
+                
+                // Wyczyszczenie i zablokowanie UI
+                document.getElementById('clue-list').innerHTML = `
+                    <div style="text-align:center; padding: 3rem 1rem; color: #1e293b;">
+                        <h2 style="font-size: 2rem; margin-bottom: 1rem;">Koniec Badania</h2>
+                        <p style="font-size: 1.1rem; color: #475569;">Wszystkie dane zostały zapisane poprawnie.</p>
+                        <p style="font-size: 1.1rem; color: #475569; margin-top: 0.5rem;">Dziękujemy za Twój czas!</p>
+                    </div>
+                `;
+                const panHeader = document.querySelector('.panoramic-header h2');
+                if (panHeader) panHeader.innerText = 'Badanie Ukończone';
+                
+                logAction('experiment_completed', { timestamp: new Date().toISOString() });
+            }
+        }, 600);
     }
 }
 
