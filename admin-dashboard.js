@@ -100,23 +100,35 @@ function processData() {
             <div class="stat-value" style="color: var(--amber);">${withHints}</div>
             <div class="stat-secondary">Rozwiązane przy użyciu hintu</div>
         </div>
+        <div class="stat-card">
+            <h3>Śr. czas badania</h3>
+            <div class="stat-value" id="global-avg-session">-</div>
+            <div class="stat-secondary">Całkowity czas od startu</div>
+        </div>
     `;
 
     // Tabela użytkowników
     const userStats = users.map(uid => {
         const uWords = wordsData.filter(w => w.userId === uid);
+        const uLogs = rawLogs.filter(l => l.userId === uid);
         const uCompleted = uWords.filter(w => w.action === 'word_completed');
+        const uClean = uCompleted.filter(w => w.cleanSolve);
         const uSkipped = uWords.filter(w => w.action === 'word_skipped');
-        
         const times = uCompleted.map(w => w.durationSeconds || 0);
-        const uClean = uCompleted.filter(w => w.cleanSolve).length;
-        const uCleanRatio = uCompleted.length ? (uClean / uCompleted.length) * 100 : 0;
+        const uCleanRatio = uCompleted.length ? (uClean.length / uCompleted.length) * 100 : 0;
         
+        let sessionMin = 0;
+        if (uLogs.length > 1 && uLogs[0].timestamp && uLogs[uLogs.length-1].timestamp) {
+            const diffMs = new Date(uLogs[uLogs.length-1].timestamp) - new Date(uLogs[0].timestamp);
+            sessionMin = diffMs / 60000;
+        }
+
         return {
             userId: uid,
             ageGroup: userAgeMap[uid] || '-',
+            totalSessionMin: sessionMin,
             completed: uCompleted.length,
-            withHints: uCompleted.length - uClean,
+            withHints: uCompleted.length - uClean.length,
             skipped: uSkipped.length,
             cleanRatio: uCleanRatio,
             avgTime: times.length ? times.reduce((a,b) => a+b, 0) / times.length : 0,
@@ -127,6 +139,11 @@ function processData() {
         };
     });
 
+    const validSessions = userStats.filter(u => u.totalSessionMin > 0).map(u => u.totalSessionMin);
+    const globalAvgSession = validSessions.length ? validSessions.reduce((a,b) => a+b, 0) / validSessions.length : 0;
+    const globalAvgEl = document.getElementById('global-avg-session');
+    if (globalAvgEl) globalAvgEl.innerText = globalAvgSession > 0 ? globalAvgSession.toFixed(1) + ' min' : '-';
+
     const tbody = document.querySelector('#users-table tbody');
     tbody.innerHTML = '';
     userStats.sort((a,b) => b.completed - a.completed).forEach(u => {
@@ -134,6 +151,7 @@ function processData() {
             <tr>
                 <td><strong>${u.userId}</strong></td>
                 <td>${u.ageGroup}</td>
+                <td><span style="color:#0ea5e9; font-weight:600;">${u.totalSessionMin > 0 ? u.totalSessionMin.toFixed(1) + 'm' : '-'}</span></td>
                 <td>${u.completed}</td>
                 <td>${u.withHints}</td>
                 <td style="color: #ef4444; font-weight: bold;">${u.skipped}</td>
