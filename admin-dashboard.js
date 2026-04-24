@@ -42,7 +42,7 @@ async function loadData() {
         
     } catch (error) {
         console.error('Błąd pobierania danych:', error);
-        alert('Wystąpił błąd podczas pobierania danych z bazy Upstash.');
+        alert('BŁĄD: ' + error.message + '\n\nOtwórz konsolę (F12) żeby sprawdzić szczegóły. Jeśli dopiero wrzuciłeś zmiany, poczekaj 30 sekund na wdrożenie Vercel.');
     } finally {
         refreshBtn.innerText = 'Odśwież Dane';
         refreshBtn.disabled = false;
@@ -53,7 +53,7 @@ function processData() {
     // 1. Podział logów
     const demographics = rawLogs.filter(l => l.action === 'demographics_collected').map(l => ({
         userId: l.userId,
-        ageGroup: l.details.ageGroup
+        ageGroup: l.details?.ageGroup || 'Nieznany'
     }));
     
     // Tworzymy mapę userId -> ageGroup
@@ -63,7 +63,7 @@ function processData() {
     });
 
     const wordsData = rawLogs.filter(l => l.action === 'word_completed' || l.action === 'word_skipped').map(l => ({
-        ...l.details,
+        ...(l.details || {}),
         userId: l.userId,
         action: l.action,
         ageGroup: userAgeMap[l.userId] || 'Nieznany'
@@ -144,9 +144,9 @@ function processData() {
     });
 
     // ----- ZAKŁADKA 2: TAKSONOMIA -----
-    const categories = [...new Set(wordsData.map(w => w.kategoria).filter(k => k))];
+    const categories = [...new Set(wordsData.map(w => w.kategoria || 'Brak'))];
     const catStats = categories.map(cat => {
-        const cWords = wordsData.filter(w => w.kategoria === cat);
+        const cWords = wordsData.filter(w => (w.kategoria || 'Brak') === cat);
         const cCompleted = cWords.filter(w => w.action === 'word_completed');
         const cSkipped = cWords.filter(w => w.action === 'word_skipped');
         const cTimes = cCompleted.map(w => w.durationSeconds || 0);
@@ -170,7 +170,7 @@ function processData() {
     catStats.sort((a,b) => b.total - a.total).forEach(c => {
         catTbody.innerHTML += `
             <tr>
-                <td><span class="badge-cat badge-${c.category.toLowerCase()}">${c.category}</span></td>
+                <td><span class="badge-cat badge-${(c.category || 'brak').toLowerCase()}">${c.category}</span></td>
                 <td>${c.total}</td>
                 <td>${c.completed}</td>
                 <td>${c.skipped}</td>
@@ -236,8 +236,8 @@ function processData() {
 
         return {
             word: word,
-            category: wData[0].kategoria,
-            length: wData[0].length,
+            category: wData[0].kategoria || 'Brak',
+            length: wData[0].length || 0,
             completed: wCompleted.length,
             skipped: wSkipped.length,
             total: total,
@@ -260,7 +260,7 @@ function processData() {
         wTbody.innerHTML += `
             <tr>
                 <td><strong>${w.word}</strong></td>
-                <td><span class="badge-cat badge-${w.category.toLowerCase()}">${w.category}</span></td>
+                <td><span class="badge-cat badge-${(w.category || 'brak').toLowerCase()}">${w.category}</span></td>
                 <td>${w.length}</td>
                 <td>${w.completed}</td>
                 <td style="color: #ef4444; font-weight: bold;">${w.skipped}</td>
