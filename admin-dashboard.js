@@ -152,18 +152,22 @@ function processData() {
     const catStats = categories.map(cat => {
         const cWords = wordsData.filter(w => (w.kategoria || 'Brak') === cat);
         const cCompleted = cWords.filter(w => w.action === 'word_completed');
+        const cClean = cCompleted.filter(w => w.cleanSolve);
         const cSkipped = cWords.filter(w => w.action === 'word_skipped');
         const cTimes = cCompleted.map(w => w.durationSeconds || 0);
-        const cTotal = cWords.length;
+        const cCleanTimes = cClean.map(w => w.durationSeconds || 0);
+        const cTotal = cCompleted.length + cSkipped.length;
         
         return {
             category: cat,
             total: cTotal,
             completed: cCompleted.length,
-            withHints: cCompleted.length - cCompleted.filter(w => w.cleanSolve).length,
+            withHints: cCompleted.length - cClean.length,
             skipped: cSkipped.length,
             accuracy: cTotal ? (cCompleted.length / cTotal) * 100 : 0,
+            cleanAccuracy: cTotal ? (cClean.length / cTotal) * 100 : 0,
             avgTime: cTimes.length ? cTimes.reduce((a,b) => a+b, 0) / cTimes.length : 0,
+            cleanAvgTime: cCleanTimes.length ? cCleanTimes.reduce((a,b) => a+b, 0) / cCleanTimes.length : 0,
             medianTime: getMedian(cTimes),
             avgHints: cTotal ? cWords.reduce((sum, w) => sum + (w.hintCount || 0), 0) / cTotal : 0,
             skipRate: cTotal ? (cSkipped.length / cTotal) * 100 : 0
@@ -201,17 +205,31 @@ function processData() {
     `;
 
     // Wykresy Taksonomia
-    createChart('taxonomyAccChart', 'bar', categories, [{
-        label: 'Accuracy (%)',
-        data: catStats.map(c => c.accuracy),
-        backgroundColor: '#0f172a'
-    }]);
+    createChart('taxonomyAccChart', 'bar', catStats.map(c => c.category), [
+        {
+            label: 'Accuracy Ogólne (%)',
+            data: catStats.map(c => c.accuracy),
+            backgroundColor: '#0f172a'
+        },
+        {
+            label: 'Accuracy Bez Podpowiedzi (%)',
+            data: catStats.map(c => c.cleanAccuracy),
+            backgroundColor: '#22c55e'
+        }
+    ]);
 
-    createChart('taxonomyTimeChart', 'bar', categories, [{
-        label: 'Średni czas (s)',
-        data: catStats.map(c => c.avgTime),
-        backgroundColor: '#22c55e'
-    }]);
+    createChart('taxonomyTimeChart', 'bar', catStats.map(c => c.category), [
+        {
+            label: 'Średni Czas (Ogólnie) (s)',
+            data: catStats.map(c => c.avgTime),
+            backgroundColor: '#0f172a'
+        },
+        {
+            label: 'Średni Czas Bez Podpowiedzi (s)',
+            data: catStats.map(c => c.cleanAvgTime),
+            backgroundColor: '#3b82f6'
+        }
+    ]);
 
     createChart('taxonomySkipChart', 'bar', categories, [{
         label: 'Skip Rate (%)',
@@ -308,21 +326,22 @@ function processData() {
     }], { indexAxis: 'y' });
 
     // ----- ZAKŁADKA 4: DEMOGRAFIA -----
-    const ageGroups = [...new Set(Object.values(userAgeMap))];
-    const ageStats = ageGroups.map(age => {
-        const aUsers = Object.keys(userAgeMap).filter(uid => userAgeMap[uid] === age);
-        const aWords = wordsData.filter(w => aUsers.includes(w.userId));
-        const aCompleted = aWords.filter(w => w.action === 'word_completed');
-        const aSkipped = aWords.filter(w => w.action === 'word_skipped');
-        const cTimes = aCompleted.map(w => w.durationSeconds || 0);
+    const ageGroups = ['18-30', '31-45', '46-60', '60+', 'Nieznany'];
+    const ageStats = ageGroups.map(group => {
+        const groupWords = wordsData.filter(w => w.ageGroup === group);
+        const usersInGroupCount = [...new Set(groupWords.map(w => w.userId))].length;
         
+        const gCompleted = groupWords.filter(w => w.action === 'word_completed');
+        const gSkipped = groupWords.filter(w => w.action === 'word_skipped');
+        const gTimes = gCompleted.map(w => w.durationSeconds || 0);
+        const gTotal = gCompleted.length + gSkipped.length;
+
         return {
-            ageGroup: age,
-            users: aUsers.length,
-            completed: aCompleted.length,
-            accuracy: aWords.length ? (aCompleted.length / aWords.length) * 100 : 0,
-            avgTime: cTimes.length ? cTimes.reduce((a,b) => a+b, 0) / cTimes.length : 0,
-            skipRate: aWords.length ? (aSkipped.length / aWords.length) * 100 : 0
+            ageGroup: group,
+            users: usersInGroupCount,
+            accuracy: gTotal ? (gCompleted.length / gTotal) * 100 : 0,
+            avgTime: gTimes.length ? gTimes.reduce((a,b) => a+b, 0) / gTimes.length : 0,
+            skipRate: gTotal ? (gSkipped.length / gTotal) * 100 : 0
         };
     });
 
