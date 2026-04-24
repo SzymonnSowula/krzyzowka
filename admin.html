@@ -3,569 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Krzyżówka Badawcza</title>
+    <title>Dashboard Badawczy — Krzyżówka</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-color: #cbd5e1;
-            --paper-bg: #ffffff;
-            --border-color: #1e293b;
-            --accent-color: #0f172a;
-            --text-color: #1e293b;
-            --muted: #64748b;
-            --green: #22c55e;
-            --amber: #f59e0b;
-            --red: #dc2626;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: 'Outfit', 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            min-height: 100vh;
-            padding: 1.5rem;
-        }
-
-        .container { max-width: 1400px; margin: 0 auto; }
-
-        h1 {
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            color: var(--accent-color);
-            margin-bottom: 0.5rem;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: var(--muted);
-            margin-bottom: 2rem;
-            font-size: 0.95rem;
-        }
-
-        .refresh-btn {
-            display: block;
-            margin: 0 auto 2rem;
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 0.75rem 2rem;
-            font-size: 0.9rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            font-family: 'Outfit', sans-serif;
-            transition: all 0.2s;
-        }
-
-        .refresh-btn:hover { transform: translateY(-2px); box-shadow: 4px 4px 0 rgba(0,0,0,0.2); }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            border: 1px solid var(--border-color);
-            padding: 1.5rem;
-            box-shadow: 6px 6px 0 rgba(0,0,0,0.08);
-        }
-
-        .stat-card h3 {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--muted);
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-        }
-
-        .stat-value {
-            font-size: 2.2rem;
-            font-weight: 900;
-            color: var(--accent-color);
-        }
-
-        .stat-secondary {
-            font-size: 0.8rem;
-            color: var(--muted);
-            margin-top: 0.25rem;
-        }
-
-        .section-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .card {
-            background: white;
-            border: 1px solid var(--border-color);
-            padding: 1.5rem;
-            box-shadow: 6px 6px 0 rgba(0,0,0,0.08);
-        }
-
-        .card h3 {
-            font-size: 1rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .export-row {
-            display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-            margin-bottom: 2rem;
-        }
-
-        .export-btn {
-            background: white;
-            border: 1px solid var(--border-color);
-            padding: 0.6rem 1.5rem;
-            font-weight: 700;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            cursor: pointer;
-            font-family: 'Outfit', sans-serif;
-            transition: all 0.2s;
-        }
-
-        .export-btn:hover { background: var(--accent-color); color: white; }
-
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #e2e8f0; }
-        th { font-weight: 700; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 1px; color: var(--muted); background: #f8fafc; }
-        tr:hover { background: #f8fafc; }
-
-        .badge {
-            display: inline-block;
-            padding: 2px 10px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .badge-completed { background: #dcfce7; color: #166534; }
-        .badge-skipped { background: #fef3c7; color: #92400e; }
-        .badge-hint { background: #e0e7ff; color: #3730a3; }
-
-        .difficulty-dot {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .diff-easy { background: var(--green); }
-        .diff-medium { background: var(--amber); }
-        .diff-hard { background: var(--red); }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: var(--muted);
-            font-size: 0.95rem;
-        }
-
-        @media (max-width: 768px) {
-            .section-grid { grid-template-columns: 1fr; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            h1 { font-size: 1.5rem; letter-spacing: 2px; }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin-style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Dashboard Badawczy</h1>
-        <p class="subtitle">Panel analityczny — Krzyżówka badawcza</p>
-
-        <button class="refresh-btn" onclick="loadData()">↻ Odśwież dane</button>
-
-        <div class="stats-grid" id="stats-grid">
-            <div class="stat-card"><h3>Ładowanie...</h3><div class="stat-value">—</div></div>
-        </div>
-
-        <div class="export-row">
-            <button class="export-btn" onclick="exportToCSV()">↓ Eksport CSV</button>
-            <button class="export-btn" onclick="exportToJSON()">↓ Eksport JSON</button>
-            <button class="export-btn" onclick="exportFullReport()">↓ Pełny raport CSV</button>
-        </div>
-
-        <div class="section-grid">
-            <div class="card">
-                <h3>Czas rozwiązywania (średni per hasło)</h3>
-                <canvas id="timeChart"></canvas>
+    <header class="top-bar">
+        <div class="top-bar-inner">
+            <div class="logo">
+                <span class="logo-icon">◈</span>
+                <span>DASHBOARD BADAWCZY</span>
             </div>
-            <div class="card">
-                <h3>Wskaźnik trudności (Hint Ratio %)</h3>
-                <canvas id="difficultyChart"></canvas>
+            <button class="refresh-btn" onclick="loadData()">
+                <span class="refresh-icon">↻</span> Odśwież
+            </button>
+        </div>
+    </header>
+
+    <nav class="tabs-nav">
+        <div class="tabs-inner">
+            <button class="tab active" data-tab="overview">Przegląd</button>
+            <button class="tab" data-tab="taxonomy">Taksonomia</button>
+            <button class="tab" data-tab="difficulty">Trudność</button>
+            <button class="tab" data-tab="demographics">Demografia</button>
+            <button class="tab" data-tab="export">Eksport</button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- ═══════ TAB: PRZEGLĄD ═══════ -->
+        <section id="tab-overview" class="tab-content active">
+            <div class="stats-grid" id="stats-grid">
+                <div class="stat-card"><h3>Ładowanie...</h3><div class="stat-value">—</div></div>
             </div>
-        </div>
-
-        <div class="section-grid">
-            <div class="card">
-                <h3>Rozkład grup wiekowych</h3>
-                <canvas id="ageChart"></canvas>
-            </div>
-            <div class="card">
-                <h3>Tempo pisania (ms między literami)</h3>
-                <canvas id="typingSpeedChart"></canvas>
-            </div>
-        </div>
-
-        <div class="card" style="margin-bottom: 2rem;">
-            <h3>Szczegółowe dane użytkowników</h3>
-            <table id="users-table">
-                <thead>
-                    <tr>
-                        <th>Użytkownik</th>
-                        <th>Grupa wiekowa</th>
-                        <th>Rozwiązane</th>
-                        <th>Pominięte</th>
-                        <th>Śr. czas (s)</th>
-                        <th>Mediana (s)</th>
-                        <th>Podpowiedzi</th>
-                        <th>Błędy</th>
-                        <th>Backspace</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-
-        <div class="card">
-            <h3>Analiza trudności haseł</h3>
-            <table id="words-table">
-                <thead>
-                    <tr>
-                        <th>Hasło</th>
-                        <th>Długość</th>
-                        <th>Rozwiązane</th>
-                        <th>Pominięte</th>
-                        <th>Śr. czas (s)</th>
-                        <th>Mediana (s)</th>
-                        <th>Hint Ratio</th>
-                        <th>Śr. błędy</th>
-                        <th>Trudność</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-    </div>
-
-    <script>
-        let allLogs = [];
-        let charts = {};
-
-        async function loadData() {
-            try {
-                const response = await fetch('/api/logs');
-                allLogs = await response.json();
-                if (!Array.isArray(allLogs)) allLogs = [];
-                updateDashboard();
-            } catch (err) {
-                console.error('Błąd ładowania:', err);
-                document.getElementById('stats-grid').innerHTML = '<div class="empty-state">Błąd ładowania danych: ' + err.message + '</div>';
-            }
-        }
-
-        // Helpers
-        function median(arr) {
-            if (!arr.length) return 0;
-            const s = [...arr].sort((a, b) => a - b);
-            const mid = Math.floor(s.length / 2);
-            return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
-        }
-
-        function avg(arr) {
-            return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
-        }
-
-        function updateDashboard() {
-            updateStats();
-            updateCharts();
-            updateUsersTable();
-            updateWordsTable();
-        }
-
-        function updateStats() {
-            const completed = allLogs.filter(l => l.action === 'word_completed');
-            const skipped = allLogs.filter(l => l.action === 'word_skipped');
-            const users = [...new Set(allLogs.map(l => l.userId).filter(Boolean))];
-            const uniqueWords = [...new Set(completed.map(l => l.details?.word).filter(Boolean))];
-
-            const times = completed.map(l => l.details?.durationMs || 0).filter(t => t > 0);
-            const avgTime = avg(times);
-            const medTime = median(times);
-
-            const totalHints = allLogs.filter(l => l.action === 'hint_used').length;
-            const totalErrors = allLogs.filter(l => l.action === 'incorrect_letter').length;
-
-            const demographics = allLogs.filter(l => l.action === 'demographics_collected');
-            const ageGroups = {};
-            demographics.forEach(l => {
-                const g = l.details?.ageGroup || 'unknown';
-                ageGroups[g] = (ageGroups[g] || 0) + 1;
-            });
-            const ageStr = Object.entries(ageGroups).map(([k, v]) => `${k}: ${v}`).join(', ') || '—';
-
-            const stats = [
-                { title: 'Uczestników', value: users.length, secondary: 'unikalnych sesji' },
-                { title: 'Rozwiązanych haseł', value: completed.length, secondary: `z ${completed.length + skipped.length} prób` },
-                { title: 'Pominiętych (nie umiem)', value: skipped.length, secondary: `${completed.length + skipped.length > 0 ? ((skipped.length / (completed.length + skipped.length)) * 100).toFixed(1) : 0}% skip rate` },
-                { title: 'Średni czas', value: (avgTime / 1000).toFixed(2) + 's', secondary: `mediana: ${(medTime / 1000).toFixed(2)}s` },
-                { title: 'Podpowiedzi', value: totalHints, secondary: `${completed.length > 0 ? (totalHints / completed.length).toFixed(2) : 0} per hasło` },
-                { title: 'Błędne litery', value: totalErrors, secondary: `${completed.length > 0 ? (totalErrors / completed.length).toFixed(2) : 0} per hasło` },
-                { title: 'Grupy wiekowe', value: Object.keys(ageGroups).length, secondary: ageStr }
-            ];
-
-            document.getElementById('stats-grid').innerHTML = stats.map(s => `
-                <div class="stat-card">
-                    <h3>${s.title}</h3>
-                    <div class="stat-value">${s.value}</div>
-                    <div class="stat-secondary">${s.secondary}</div>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Czas rozwiązywania (średni per hasło)</h3>
+                    <canvas id="timeChart"></canvas>
                 </div>
-            `).join('');
-        }
+                <div class="card">
+                    <h3>Tempo pisania (ms między literami)</h3>
+                    <canvas id="typingSpeedChart"></canvas>
+                </div>
+            </div>
+            <div class="card mt">
+                <h3>Szczegółowe dane użytkowników</h3>
+                <div class="table-scroll">
+                <table id="users-table">
+                    <thead><tr>
+                        <th>Użytkownik</th><th>Wiek</th><th>Rozwiązane</th><th>Pominięte</th>
+                        <th>Czyste (%)</th><th>Śr. czas</th><th>Mediana</th>
+                        <th>Podpowiedzi</th><th>Błędy</th><th>Backspace</th>
+                    </tr></thead>
+                    <tbody></tbody>
+                </table>
+                </div>
+            </div>
+        </section>
 
-        function updateCharts() {
-            const completed = allLogs.filter(l => l.action === 'word_completed');
+        <!-- ═══════ TAB: TAKSONOMIA ═══════ -->
+        <section id="tab-taxonomy" class="tab-content">
+            <div class="stats-grid" id="taxonomy-stats"></div>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Accuracy per kategoria (czyste rozwiązania %)</h3>
+                    <canvas id="taxonomyAccChart"></canvas>
+                </div>
+                <div class="card">
+                    <h3>Średni czas per kategoria (s)</h3>
+                    <canvas id="taxonomyTimeChart"></canvas>
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Skip rate per kategoria (%)</h3>
+                    <canvas id="taxonomySkipChart"></canvas>
+                </div>
+                <div class="card">
+                    <h3>Hint ratio per kategoria (%)</h3>
+                    <canvas id="taxonomyHintChart"></canvas>
+                </div>
+            </div>
+            <div class="card mt">
+                <h3>Heatmapa: Grupa wiekowa × Kategoria (Accuracy %)</h3>
+                <canvas id="heatmapChart"></canvas>
+            </div>
+            <div class="card mt">
+                <h3>Tabela: Wyniki per kategoria</h3>
+                <div class="table-scroll">
+                <table id="taxonomy-table">
+                    <thead><tr>
+                        <th>Kategoria</th><th>Próby</th><th>Rozwiązane</th><th>Pominięte</th>
+                        <th>Accuracy (%)</th><th>Śr. czas (s)</th><th>Mediana (s)</th>
+                        <th>Avg Hints</th><th>Skip Rate (%)</th>
+                    </tr></thead>
+                    <tbody></tbody>
+                </table>
+                </div>
+            </div>
+        </section>
 
-            // Avg time per word
-            const wordTimes = {};
-            completed.forEach(l => {
-                const w = l.details?.word;
-                if (w) {
-                    if (!wordTimes[w]) wordTimes[w] = [];
-                    wordTimes[w].push(l.details?.durationSeconds || 0);
-                }
-            });
+        <!-- ═══════ TAB: TRUDNOŚĆ ═══════ -->
+        <section id="tab-difficulty" class="tab-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Scatter: Trudność vs Czas rozwiązania</h3>
+                    <p class="card-desc">X = trudność (avg hints + skip rate), Y = avg czas. Kolor = kategoria.</p>
+                    <canvas id="diffScatterChart"></canvas>
+                </div>
+                <div class="card">
+                    <h3>Ranking trudności haseł</h3>
+                    <p class="card-desc">Difficulty score = hint_ratio×40 + skip_rate×40 + avg_errors×20</p>
+                    <canvas id="diffRankChart"></canvas>
+                </div>
+            </div>
+            <div class="card mt">
+                <h3>Analiza trudności per hasło</h3>
+                <div class="table-scroll">
+                <table id="words-table">
+                    <thead><tr>
+                        <th>Hasło</th><th>Kategoria</th><th>Dł.</th><th>Rozw.</th><th>Pom.</th>
+                        <th>Accuracy %</th><th>Śr. czas</th><th>Mediana</th>
+                        <th>Hint Ratio</th><th>Śr. błędy</th><th>Trudność</th>
+                    </tr></thead>
+                    <tbody></tbody>
+                </table>
+                </div>
+            </div>
+        </section>
 
-            const avgTimes = Object.entries(wordTimes)
-                .map(([word, times]) => ({ word, avg: avg(times) }))
-                .sort((a, b) => b.avg - a.avg);
+        <!-- ═══════ TAB: DEMOGRAFIA ═══════ -->
+        <section id="tab-demographics" class="tab-content">
+            <div class="stats-grid" id="demo-stats"></div>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Rozkład grup wiekowych</h3>
+                    <canvas id="ageChart"></canvas>
+                </div>
+                <div class="card">
+                    <h3>Accuracy per grupa wiekowa (%)</h3>
+                    <canvas id="ageAccChart"></canvas>
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Średni czas per grupa wiekowa (s)</h3>
+                    <canvas id="ageTimeChart"></canvas>
+                </div>
+                <div class="card">
+                    <h3>Skip rate per grupa wiekowa (%)</h3>
+                    <canvas id="ageSkipChart"></canvas>
+                </div>
+            </div>
+        </section>
 
-            renderChart('timeChart', 'bar', avgTimes.map(d => d.word), avgTimes.map(d => parseFloat(d.avg.toFixed(2))), 'Czas (s)', 'rgba(15, 23, 43, 0.7)', 'rgba(15, 23, 43, 1)');
+        <!-- ═══════ TAB: EKSPORT ═══════ -->
+        <section id="tab-export" class="tab-content">
+            <div class="card">
+                <h3>Eksport danych badawczych</h3>
+                <p class="card-desc" style="margin-bottom:1.5rem;">Pobierz dane w formacie odpowiednim do analizy statystycznej.</p>
+                <div class="export-grid">
+                    <div class="export-card" onclick="exportCompletedCSV()">
+                        <div class="export-icon">📊</div>
+                        <h4>Rozwiązania (CSV)</h4>
+                        <p>Wszystkie word_completed z pełnymi metrykami + kategoria</p>
+                    </div>
+                    <div class="export-card" onclick="exportFullReportCSV()">
+                        <div class="export-icon">📋</div>
+                        <h4>Pełny raport (CSV)</h4>
+                        <p>completed + skipped + demographics — jeden plik</p>
+                    </div>
+                    <div class="export-card" onclick="exportPerQuestionCSV()">
+                        <div class="export-icon">🔬</div>
+                        <h4>Per-question summary (CSV)</h4>
+                        <p>Zagregowane metryki per hasło z difficulty score</p>
+                    </div>
+                    <div class="export-card" onclick="exportPerUserCSV()">
+                        <div class="export-icon">👤</div>
+                        <h4>Per-user summary (CSV)</h4>
+                        <p>Zagregowane wyniki per uczestnik</p>
+                    </div>
+                    <div class="export-card" onclick="exportAllJSON()">
+                        <div class="export-icon">{ }</div>
+                        <h4>Wszystkie logi (JSON)</h4>
+                        <p>Surowe dane — pełna struktura logów</p>
+                    </div>
+                    <div class="export-card" onclick="exportTaxonomyCSV()">
+                        <div class="export-icon">🏷️</div>
+                        <h4>Taksonomia (CSV)</h4>
+                        <p>Accuracy per kategoria per grupa wiekowa</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-            // Hint ratio
-            const hintRatios = Object.entries(wordTimes).map(([word]) => {
-                const wLogs = completed.filter(l => l.details?.word === word);
-                const avgHint = avg(wLogs.map(l => l.details?.hintRatio || 0));
-                return { word, avgHint };
-            }).sort((a, b) => b.avgHint - a.avgHint);
-
-            renderChart('difficultyChart', 'bar', hintRatios.map(d => d.word), hintRatios.map(d => parseFloat((d.avgHint * 100).toFixed(1))), 'Hint Ratio (%)', 'rgba(245, 158, 11, 0.7)', 'rgba(245, 158, 11, 1)');
-
-            // Age groups
-            const demographics = allLogs.filter(l => l.action === 'demographics_collected');
-            const ageGroups = {};
-            demographics.forEach(l => {
-                const g = l.details?.ageGroup || 'unknown';
-                ageGroups[g] = (ageGroups[g] || 0) + 1;
-            });
-
-            const ageLabels = Object.keys(ageGroups);
-            const ageValues = Object.values(ageGroups);
-            const ageColors = ['rgba(34,197,94,0.7)', 'rgba(59,130,246,0.7)', 'rgba(245,158,11,0.7)', 'rgba(220,38,38,0.7)'];
-
-            renderChart('ageChart', 'doughnut', ageLabels, ageValues, 'Uczestników', ageColors.slice(0, ageLabels.length), ageColors.slice(0, ageLabels.length));
-
-            // Typing speed
-            const typingSpeeds = {};
-            completed.forEach(l => {
-                const w = l.details?.word;
-                const speed = l.details?.typingSpeedMs;
-                if (w && speed) {
-                    if (!typingSpeeds[w]) typingSpeeds[w] = [];
-                    typingSpeeds[w].push(speed);
-                }
-            });
-
-            const avgSpeeds = Object.entries(typingSpeeds)
-                .map(([word, speeds]) => ({ word, avg: avg(speeds) }))
-                .sort((a, b) => b.avg - a.avg);
-
-            renderChart('typingSpeedChart', 'bar', avgSpeeds.map(d => d.word), avgSpeeds.map(d => Math.round(d.avg)), 'ms między literami', 'rgba(99,102,241,0.7)', 'rgba(99,102,241,1)');
-        }
-
-        function renderChart(id, type, labels, data, label, bgColor, borderColor) {
-            const ctx = document.getElementById(id)?.getContext('2d');
-            if (!ctx) return;
-            if (charts[id]) charts[id].destroy();
-
-            const isArray = Array.isArray(bgColor);
-
-            charts[id] = new Chart(ctx, {
-                type,
-                data: {
-                    labels,
-                    datasets: [{
-                        label,
-                        data,
-                        backgroundColor: isArray ? bgColor : bgColor,
-                        borderColor: isArray ? borderColor : borderColor,
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: type === 'doughnut' } },
-                    ...(type !== 'doughnut' ? { scales: { y: { beginAtZero: true } } } : {})
-                }
-            });
-        }
-
-        function updateUsersTable() {
-            const users = {};
-            allLogs.forEach(l => {
-                const u = l.userId;
-                if (!u) return;
-                if (!users[u]) users[u] = { completed: 0, skipped: 0, times: [], hints: 0, errors: 0, backspaces: 0, ageGroup: '—' };
-
-                if (l.action === 'demographics_collected') {
-                    users[u].ageGroup = l.details?.ageGroup || '—';
-                }
-                if (l.action === 'word_completed') {
-                    users[u].completed++;
-                    users[u].times.push(l.details?.durationSeconds || 0);
-                    users[u].hints += l.details?.hintCount || 0;
-                    users[u].errors += l.details?.incorrectAttempts || 0;
-                    users[u].backspaces += l.details?.backspaceCount || 0;
-                }
-                if (l.action === 'word_skipped') {
-                    users[u].skipped++;
-                }
-            });
-
-            const tbody = document.querySelector('#users-table tbody');
-            const entries = Object.entries(users).filter(([, d]) => d.completed > 0 || d.skipped > 0);
-
-            if (entries.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="empty-state">Brak danych</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = entries.map(([user, data]) => {
-                const avgT = avg(data.times).toFixed(2);
-                const medT = median(data.times).toFixed(2);
-                return `<tr>
-                    <td><strong>${user}</strong></td>
-                    <td>${data.ageGroup}</td>
-                    <td>${data.completed}</td>
-                    <td>${data.skipped}</td>
-                    <td>${avgT}</td>
-                    <td>${medT}</td>
-                    <td>${data.hints}</td>
-                    <td>${data.errors}</td>
-                    <td>${data.backspaces}</td>
-                </tr>`;
-            }).join('');
-        }
-
-        function updateWordsTable() {
-            const words = {};
-            allLogs.filter(l => l.action === 'word_completed' || l.action === 'word_skipped').forEach(l => {
-                const w = l.details?.word;
-                if (!w) return;
-                if (!words[w]) words[w] = { length: l.details?.length || w.length, completed: 0, skipped: 0, times: [], hints: [], errors: [] };
-
-                if (l.action === 'word_completed') {
-                    words[w].completed++;
-                    words[w].times.push(l.details?.durationSeconds || 0);
-                    words[w].hints.push(l.details?.hintRatio || 0);
-                    words[w].errors.push(l.details?.incorrectAttempts || 0);
-                } else {
-                    words[w].skipped++;
-                }
-            });
-
-            const tbody = document.querySelector('#words-table tbody');
-            const entries = Object.entries(words);
-
-            if (entries.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="empty-state">Brak danych</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = entries.map(([word, data]) => {
-                const avgT = avg(data.times).toFixed(2);
-                const medT = median(data.times).toFixed(2);
-                const avgHint = (avg(data.hints) * 100).toFixed(1);
-                const avgErr = avg(data.errors).toFixed(2);
-                const total = data.completed + data.skipped;
-                const skipRate = total > 0 ? (data.skipped / total * 100) : 0;
-
-                // Difficulty score: combined hint ratio + skip rate + error rate
-                const diffScore = parseFloat(avgHint) + skipRate + parseFloat(avgErr) * 10;
-                let diffClass = 'diff-easy';
-                if (diffScore > 40) diffClass = 'diff-hard';
-                else if (diffScore > 15) diffClass = 'diff-medium';
-
-                return `<tr>
-                    <td><strong>${word}</strong></td>
-                    <td>${data.length}</td>
-                    <td>${data.completed}</td>
-                    <td>${data.skipped}</td>
-                    <td>${avgT}</td>
-                    <td>${medT}</td>
-                    <td>${avgHint}%</td>
-                    <td>${avgErr}</td>
-                    <td><span class="difficulty-dot ${diffClass}"></span></td>
-                </tr>`;
-            }).sort().join('');
-        }
-
-        function exportToCSV() {
-            const completed = allLogs.filter(l => l.action === 'word_completed');
-            if (!completed.length) { alert('Brak danych'); return; }
-
-            const headers = ['userId','timestamp','word','length','durationSeconds','method','solveOrder','thinkTimeMs','typingSpeedMs','incorrectAttempts','backspaceCount','hintCount','hintRatio'];
-            const rows = completed.map(l => headers.map(h => h === 'userId' ? l.userId : h === 'timestamp' ? l.timestamp : l.details?.[h] ?? ''));
-            downloadFile([headers.join(';'), ...rows.map(r => r.join(';'))].join('\n'), 'krzyzowka_completed.csv', 'text/csv;charset=utf-8');
-        }
-
-        function exportToJSON() {
-            downloadFile(JSON.stringify(allLogs, null, 2), 'krzyzowka_all_logs.json', 'application/json');
-        }
-
-        function exportFullReport() {
-            const relevant = allLogs.filter(l => ['word_completed', 'word_skipped', 'demographics_collected'].includes(l.action));
-            const headers = ['userId','timestamp','action','ageGroup','word','length','durationSeconds','method','solveOrder','thinkTimeMs','typingSpeedMs','incorrectAttempts','backspaceCount','hintCount','hintRatio','lettersFilledBeforeSkip'];
-            const rows = relevant.map(l => {
-                const d = l.details || {};
-                return [l.userId, l.timestamp, l.action, d.ageGroup||'', d.word||'', d.length||'', d.durationSeconds||'', d.method||'', d.solveOrder||'', d.thinkTimeMs||'', d.typingSpeedMs||'', d.incorrectAttempts||'', d.backspaceCount||'', d.hintCount||'', d.hintRatio||'', d.lettersFilledBeforeSkip||''].join(';');
-            });
-            downloadFile('\uFEFF' + [headers.join(';'), ...rows].join('\n'), 'krzyzowka_full_report.csv', 'text/csv;charset=utf-8');
-        }
-
-        function downloadFile(content, filename, type) {
-            const blob = new Blob([content], { type });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = filename;
-            a.click();
-            URL.revokeObjectURL(a.href);
-        }
-
-        loadData();
-    </script>
+    <script src="admin-dashboard.js"></script>
 </body>
 </html>

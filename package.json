@@ -2,6 +2,7 @@
   "name": "krzyzowka-badawcza",
   "version": "1.0.0",
   "description": "Krzyżówka badawcza - testy na ludziach",
+  "type": "commonjs",
   "scripts": {
     "dev": "vercel dev",
     "deploy": "vercel --prod",

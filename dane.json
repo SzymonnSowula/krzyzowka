@@ -2,101 +2,121 @@
   {
     "pytanie": "Imię Kurosawy, reżysera",
     "liter": 5,
-    "odpowiedz": "AKIRA"
+    "odpowiedz": "AKIRA",
+    "kategoria": "film"
   },
   {
     "pytanie": "Ojciec Zeusa i Hery",
     "liter": 6,
-    "odpowiedz": "KRONOS"
+    "odpowiedz": "KRONOS",
+    "kategoria": "mitologia"
   },
   {
     "pytanie": "Podwodny grunt",
     "liter": 3,
-    "odpowiedz": "DNO"
+    "odpowiedz": "DNO",
+    "kategoria": "słownikowe"
   },
   {
     "pytanie": "Nabranie powietrza do płuc",
     "liter": 5,
-    "odpowiedz": "WDECH"
+    "odpowiedz": "WDECH",
+    "kategoria": "biologia"
   },
   {
     "pytanie": "Kropla smutku",
     "liter": 3,
-    "odpowiedz": "ŁZA"
+    "odpowiedz": "ŁZA",
+    "kategoria": "metafora"
   },
   {
     "pytanie": "Czasem pełne roboty",
     "liter": 4,
-    "odpowiedz": "RĘCE"
+    "odpowiedz": "RĘCE",
+    "kategoria": "idiomy"
   },
   {
     "pytanie": "Agencja wywiadu USA",
     "liter": 3,
-    "odpowiedz": "CIA"
+    "odpowiedz": "CIA",
+    "kategoria": "polityka"
   },
   {
     "pytanie": "Brad, znany aktor",
     "liter": 4,
-    "odpowiedz": "PITT"
+    "odpowiedz": "PITT",
+    "kategoria": "film"
   },
   {
     "pytanie": "Góral z dowcipów",
     "liter": 4,
-    "odpowiedz": "BACA"
+    "odpowiedz": "BACA",
+    "kategoria": "folklor"
   },
   {
     "pytanie": "Kompan Stasia i Nel",
     "liter": 4,
-    "odpowiedz": "KALI"
+    "odpowiedz": "KALI",
+    "kategoria": "literatura"
   },
   {
     "pytanie": "Żeglarz i odkrywca portugalski",
     "liter": 8,
-    "odpowiedz": "MAGELLAN"
+    "odpowiedz": "MAGELLAN",
+    "kategoria": "historia"
   },
   {
     "pytanie": "Japońskie miasto zimowych igrzysk",
     "liter": 6,
-    "odpowiedz": "NAGANO"
+    "odpowiedz": "NAGANO",
+    "kategoria": "geografia"
   },
   {
     "pytanie": "Np. Camp Nou",
     "liter": 7,
-    "odpowiedz": "STADION"
+    "odpowiedz": "STADION",
+    "kategoria": "sport"
   },
   {
     "pytanie": "Naprawa uszkodzenia",
     "liter": 9,
-    "odpowiedz": "REPERACJA"
+    "odpowiedz": "REPERACJA",
+    "kategoria": "słownikowe"
   },
   {
     "pytanie": "Trafia się ślepej kurze",
     "liter": 6,
-    "odpowiedz": "ZIARNO"
+    "odpowiedz": "ZIARNO",
+    "kategoria": "przysłowia"
   },
   {
     "pytanie": "Obcy wtręt językowy",
     "liter": 10,
-    "odpowiedz": "MAKARONIZM"
+    "odpowiedz": "MAKARONIZM",
+    "kategoria": "językoznawstwo"
   },
   {
     "pytanie": "Kaczor z kreskówek",
     "liter": 6,
-    "odpowiedz": "DONALD"
+    "odpowiedz": "DONALD",
+    "kategoria": "popkultura"
   },
   {
     "pytanie": "Niemiecki rywal BMW",
     "liter": 4,
-    "odpowiedz": "AUDI"
+    "odpowiedz": "AUDI",
+    "kategoria": "motoryzacja"
   },
   {
     "pytanie": "Siostra Balladyny",
     "liter": 5,
-    "odpowiedz": "ALINA"
+    "odpowiedz": "ALINA",
+    "kategoria": "literatura"
   },
   {
     "pytanie": "Kora w zespole Maanam",
     "liter": 10,
-    "odpowiedz": "WOKALISTKA"
+    "odpowiedz": "WOKALISTKA",
+    "kategoria": "muzyka"
   }
 ]

@@ -104,6 +104,7 @@ function generateLevel() {
             id: index,
             clue: d.pytanie,
             answer: d.odpowiedz.toUpperCase(),
+            kategoria: d.kategoria || 'unknown', // Kategoria semantyczna pytania
             startTime: null,
             endTime: null,
             isCompleted: false,
@@ -323,6 +324,7 @@ function stopTimer(wIdx, method = 'manual') {
     // Pełne metryki hasła
     const wordMetrics = {
         word: w.answer,
+        kategoria: w.kategoria, // Kategoria semantyczna
         length: w.answer.length,
         durationMs,
         durationSeconds: parseFloat(durationSeconds),
@@ -336,6 +338,8 @@ function stopTimer(wIdx, method = 'manual') {
         backspaceCount: w.backspaceCount,
         hintCount: w.hintCount,
         hintRatio: parseFloat(hintRatio),
+        // Accuracy: czyste rozwiązanie (bez podpowiedzi i bez pominięcia)
+        cleanSolve: method === 'manual' && w.hintCount === 0,
         // Analiza trudności
         lettersCount: w.letterTimestamps.length,
         firstLetterTime: w.firstInputTime ? w.firstInputTime - w.startTime : 0,
@@ -444,6 +448,7 @@ function skipWord(wIdx) {
 
     logAction('word_skipped', {
         word: w.answer,
+        kategoria: w.kategoria, // Kategoria semantyczna
         length: w.answer.length,
         durationMs,
         durationSeconds: parseFloat((durationMs / 1000).toFixed(1)),
@@ -453,6 +458,7 @@ function skipWord(wIdx) {
         incorrectAttempts: w.incorrectAttempts,
         backspaceCount: w.backspaceCount,
         hintCount: w.hintCount,
+        cleanSolve: false, // Pominięte = nigdy czyste
         lettersFilledBeforeSkip: Array.from(inputs).filter(i => i.value).length
     });
 
