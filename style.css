@@ -1,0 +1,392 @@
+:root {
+    --bg-color: #cbd5e1;
+    --paper-bg: #ffffff;
+    --border-color: #1e293b;
+    --cell-bg: #ffffff;
+    --clue-bg: #f1f5f9;
+    --clue-text: #0f172a;
+    --highlight-bg: #f8fafc;
+    --active-bg: #94a3b8;
+    --accent-color: #0f172a;
+    --cell-size: 50px;
+    --text-color: #1e293b;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Outfit', 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+.app-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.app-header h1 {
+    font-size: 2.5rem;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-weight: 900;
+}
+
+.user-info-badge {
+    display: inline-block;
+    background: var(--accent-color);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+    .app-container {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+    }
+}
+
+.main-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background: white;
+    padding: 2rem;
+    border: 1px solid var(--border-color);
+    box-shadow: 10px 10px 0px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 800px;
+}
+
+.panoramic-header {
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border-color);
+    text-align: left;
+}
+
+.panoramic-header h2 {
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    font-weight: 900;
+}
+
+/* Clue List */
+.clue-list-wrapper {
+    margin: 1rem 0;
+}
+
+.clue-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.clue-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    background: var(--clue-bg);
+    border-left: 6px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.clue-card.completed {
+    border-left-color: #22c55e;
+    background: #f0fdf4;
+}
+
+.clue-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.clue-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.timer-badge {
+    font-family: monospace;
+    background: var(--border-color);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.timer-badge.done {
+    background: #22c55e;
+}
+
+.clue-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.btn-hint-small {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    background: white;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.word-inputs {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.letter-box {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    background: white;
+    border: 1px solid var(--border-color);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.letter-box input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    outline: none;
+    background: transparent;
+}
+
+.letter-box.correct {
+    background-color: #dcfce7;
+}
+
+/* Interaction Panel */
+.interaction-panel {
+    background: white;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    width: 100%;
+    max-width: 300px;
+}
+
+.level-info {
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.info-card h3 {
+    margin-bottom: 0.5rem;
+}
+
+.info-card ul {
+    padding-left: 1.2rem;
+    font-size: 0.9rem;
+    color: #475569;
+}
+
+/* Modal wstępny - wybór wieku */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-overlay.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 16px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+.modal-content h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--accent-color);
+}
+
+.modal-desc {
+    color: #64748b;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+}
+
+.age-section {
+    margin-bottom: 2rem;
+}
+
+.age-section h3,
+.age-group-section h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.age-slider {
+    flex: 1;
+    height: 8px;
+    border-radius: 4px;
+    background: #e2e8f0;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.age-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.age-slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.age-display {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    min-width: 80px;
+}
+
+.age-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    padding: 0 5px;
+}
+
+.age-group-section {
+    margin-bottom: 2rem;
+}
+
+.age-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.age-btn {
+    padding: 0.9rem 0.5rem;
+    border: 2px solid #e2e8f0;
+    background: white;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.age-btn:hover {
+    border-color: var(--accent-color);
+    background: #f8fafc;
+}
+
+.age-btn.selected {
+    border-color: var(--accent-color);
+    background: var(--accent-color);
+    color: white;
+}
+
+.age-btn[data-group="60+"] {
+    grid-column: span 2;
+}
+
+.start-btn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 1rem;
+}
+
+.start-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.start-btn:disabled {
+    background: #cbd5e1;
+    cursor: not-allowed;
+}
+
+.privacy-note {
+    font-size: 0.8rem;
+    color: #94a3b8;
+}

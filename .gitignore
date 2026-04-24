@@ -3,3 +3,7 @@ logs.json
 .env
 .DS_Store
 npm-debug.log
+user_counter.json
+
+.vercel
+.env*.local

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jolka - Krzyżówka Premium</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Modal wstępny - wybór wieku -->
+    <div id="age-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Witaj w badaniu!</h2>
+            <p class="modal-desc">Zanim rozpoczniesz, potrzebujemy podstawowych informacji do celów badawczych.</p>
+
+            <div class="age-group-section">
+                <h3>Wybierz grupę wiekową:</h3>
+                <div class="age-buttons">
+                    <button class="age-btn" data-group="18-30">18-30 lat</button>
+                    <button class="age-btn" data-group="31-45">31-45 lat</button>
+                    <button class="age-btn" data-group="46-60">46-60 lat</button>
+                    <button class="age-btn" data-group="60+">60+ lat</button>
+                </div>
+            </div>
+
+            <button id="start-btn" class="start-btn" disabled>Rozpocznij badanie</button>
+            <p class="privacy-note">Dane są anonimowe i wykorzystywane wyłącznie do celów naukowych.</p>
+        </div>
+    </div>
+
+    <header class="app-header">
+        <div class="user-info-badge" id="user-display"></div>
+        <h1>Krzyżówka</h1>
+        <p class="subtitle">Rozwiąż zagadki, trenuj umysł. Poziom <span id="level-counter">1</span></p>
+    </header>
+
+    <main class="app-container">
+        <div class="main-layout">
+            <div class="panoramic-header">
+                <h2>Krzyżówka - Lista Haseł</h2>
+            </div>
+
+            <div class="clue-list-wrapper">
+                <div id="clue-list" class="clue-list"></div>
+            </div>
+        </div>
+        
+        <aside class="interaction-panel">
+            <div class="level-info">Poziom <span id="level-counter">1</span></div>
+            
+            <div class="info-card">
+                <h3>Jak grać?</h3>
+                <ul>
+                    <li>Uzupełnij każde hasło w liście obok.</li>
+                    <li>Licznik czasu startuje, gdy zaczniesz pisać.</li>
+                    <li>Użyj przycisku "Podpowiedź" przy danym słowie, jeśli potrzebujesz pomocy.</li>
+                </ul>
+            </div>
+        </aside>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

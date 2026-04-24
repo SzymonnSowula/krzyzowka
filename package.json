@@ -1,16 +1,16 @@
 {
-  "name": "krzyzowka-ngrok",
+  "name": "krzyzowka-badawcza",
   "version": "1.0.0",
-  "description": "Krzyzowka z analityka przez ngrok",
-  "main": "server.js",
+  "description": "Krzyżówka badawcza - testy na ludziach",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "vercel dev",
+    "deploy": "vercel --prod",
+    "start": "node local-server.js"
   },
   "dependencies": {
-    "@ngrok/ngrok": "^1.3.0",
+    "@upstash/redis": "^1.28.0",
+    "express": "^4.18.2",
     "body-parser": "^1.20.2",
-    "cors": "^2.8.5",
-    "express": "^4.19.2"
+    "cors": "^2.8.5"
   }
 }
