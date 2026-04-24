@@ -353,7 +353,7 @@ function processData() {
 
     // Przegląd charts
     const wordsOverTime = wordsData.slice(-50);
-    createChart('timeChart', 'line', wordsOverTime.map((_, i) => i+1), [{
+    createChart('timeChart', 'line', wordsOverTime.map(w => w.word || '?'), [{
         label: 'Czas (s)',
         data: wordsOverTime.map(w => w.durationSeconds || 0),
         borderColor: '#0f172a',
@@ -362,7 +362,7 @@ function processData() {
         fill: false
     }]);
 
-    createChart('typingSpeedChart', 'line', wordsOverTime.map((_, i) => i+1), [{
+    createChart('typingSpeedChart', 'line', wordsOverTime.map(w => w.word || '?'), [{
         label: 'Typing Speed (ms)',
         data: wordsOverTime.map(w => w.typingSpeedMs || 0),
         borderColor: '#22c55e',
