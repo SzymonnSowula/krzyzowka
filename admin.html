@@ -3,23 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Badawczy — Krzyżówka</title>
+    <title>Admin Dashboard - Krzyżówka Badawcza</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="admin-style.css">
 </head>
 <body>
     <header class="top-bar">
         <div class="top-bar-inner">
-            <div class="logo">
-                <span class="logo-icon">◈</span>
-                <span>DASHBOARD BADAWCZY</span>
-            </div>
-            <button class="refresh-btn" onclick="loadData()">
-                <span class="refresh-icon">↻</span> Odśwież
-            </button>
+            <div class="logo">Dashboard Badawczy</div>
+            <button class="refresh-btn" onclick="loadData()">Odśwież Dane</button>
         </div>
     </header>
 
@@ -29,7 +24,7 @@
             <button class="tab" data-tab="taxonomy">Taksonomia</button>
             <button class="tab" data-tab="difficulty">Trudność</button>
             <button class="tab" data-tab="demographics">Demografia</button>
-            <button class="tab" data-tab="export">Eksport</button>
+            <button class="tab" data-tab="export">Eksport CSV</button>
         </div>
     </nav>
 
@@ -42,11 +37,15 @@
             <div class="grid-2">
                 <div class="card">
                     <h3>Czas rozwiązywania (średni per hasło)</h3>
+                <div class="chart-wrapper">
                     <canvas id="timeChart"></canvas>
+                </div>
                 </div>
                 <div class="card">
                     <h3>Tempo pisania (ms między literami)</h3>
+                <div class="chart-wrapper">
                     <canvas id="typingSpeedChart"></canvas>
+                </div>
                 </div>
             </div>
             <div class="card mt">
@@ -69,27 +68,31 @@
             <div class="stats-grid" id="taxonomy-stats"></div>
             <div class="grid-2">
                 <div class="card">
-                    <h3>Accuracy per kategoria (czyste rozwiązania %)</h3>
+                    <h3>Accuracy per kategoria (%)</h3>
+                <div class="chart-wrapper">
                     <canvas id="taxonomyAccChart"></canvas>
+                </div>
                 </div>
                 <div class="card">
                     <h3>Średni czas per kategoria (s)</h3>
+                <div class="chart-wrapper">
                     <canvas id="taxonomyTimeChart"></canvas>
+                </div>
                 </div>
             </div>
             <div class="grid-2">
                 <div class="card">
                     <h3>Skip rate per kategoria (%)</h3>
+                <div class="chart-wrapper">
                     <canvas id="taxonomySkipChart"></canvas>
+                </div>
                 </div>
                 <div class="card">
                     <h3>Hint ratio per kategoria (%)</h3>
+                <div class="chart-wrapper">
                     <canvas id="taxonomyHintChart"></canvas>
                 </div>
-            </div>
-            <div class="card mt">
-                <h3>Heatmapa: Grupa wiekowa × Kategoria (Accuracy %)</h3>
-                <canvas id="heatmapChart"></canvas>
+                </div>
             </div>
             <div class="card mt">
                 <h3>Tabela: Wyniki per kategoria</h3>
@@ -110,14 +113,18 @@
         <section id="tab-difficulty" class="tab-content">
             <div class="grid-2">
                 <div class="card">
-                    <h3>Scatter: Trudność vs Czas rozwiązania</h3>
-                    <p class="card-desc">X = trudność (avg hints + skip rate), Y = avg czas. Kolor = kategoria.</p>
-                    <canvas id="diffScatterChart"></canvas>
+                    <h3>Trudność vs Czas rozwiązania</h3>
+                    <p class="card-desc">Scatter chart ułatwiający identyfikację odstających haseł.</p>
+                    <div class="chart-wrapper">
+                        <canvas id="diffScatterChart"></canvas>
+                    </div>
                 </div>
                 <div class="card">
                     <h3>Ranking trudności haseł</h3>
-                    <p class="card-desc">Difficulty score = hint_ratio×40 + skip_rate×40 + avg_errors×20</p>
-                    <canvas id="diffRankChart"></canvas>
+                    <p class="card-desc">Difficulty = hint_ratio×40 + skip_rate×40 + errors×20</p>
+                    <div class="chart-wrapper">
+                        <canvas id="diffRankChart"></canvas>
+                    </div>
                 </div>
             </div>
             <div class="card mt">
@@ -141,21 +148,29 @@
             <div class="grid-2">
                 <div class="card">
                     <h3>Rozkład grup wiekowych</h3>
+                <div class="chart-wrapper">
                     <canvas id="ageChart"></canvas>
+                </div>
                 </div>
                 <div class="card">
                     <h3>Accuracy per grupa wiekowa (%)</h3>
+                <div class="chart-wrapper">
                     <canvas id="ageAccChart"></canvas>
+                </div>
                 </div>
             </div>
             <div class="grid-2">
                 <div class="card">
                     <h3>Średni czas per grupa wiekowa (s)</h3>
+                <div class="chart-wrapper">
                     <canvas id="ageTimeChart"></canvas>
+                </div>
                 </div>
                 <div class="card">
                     <h3>Skip rate per grupa wiekowa (%)</h3>
+                <div class="chart-wrapper">
                     <canvas id="ageSkipChart"></canvas>
+                </div>
                 </div>
             </div>
         </section>
@@ -163,38 +178,38 @@
         <!-- ═══════ TAB: EKSPORT ═══════ -->
         <section id="tab-export" class="tab-content">
             <div class="card">
-                <h3>Eksport danych badawczych</h3>
-                <p class="card-desc" style="margin-bottom:1.5rem;">Pobierz dane w formacie odpowiednim do analizy statystycznej.</p>
+                <h3>Eksport danych badawczych do CSV</h3>
+                <p class="card-desc" style="margin-bottom:1.5rem;">Pobierz zagregowane i zoptymalizowane dane bezpośrednio do analizy (np. w SPSS, Excelu). Zastosowano kodowanie z BOM dla poprawnego działania w arkuszach kalkulacyjnych.</p>
                 <div class="export-grid">
                     <div class="export-card" onclick="exportCompletedCSV()">
                         <div class="export-icon">📊</div>
-                        <h4>Rozwiązania (CSV)</h4>
-                        <p>Wszystkie word_completed z pełnymi metrykami + kategoria</p>
+                        <h4>Rozwiązania</h4>
+                        <p>Plik CSV zawierający wszystkie ukończone pomyślnie hasła z pełnymi metrykami.</p>
                     </div>
                     <div class="export-card" onclick="exportFullReportCSV()">
                         <div class="export-icon">📋</div>
-                        <h4>Pełny raport (CSV)</h4>
-                        <p>completed + skipped + demographics — jeden plik</p>
+                        <h4>Pełny Raport Zdarzeń</h4>
+                        <p>Zintegrowany plik łączący rozwiązania, hasła pominięte i przypisaną demografię.</p>
                     </div>
                     <div class="export-card" onclick="exportPerQuestionCSV()">
                         <div class="export-icon">🔬</div>
-                        <h4>Per-question summary (CSV)</h4>
-                        <p>Zagregowane metryki per hasło z difficulty score</p>
+                        <h4>Agregacja per hasło</h4>
+                        <p>Podsumowanie każdego słowa - uśredniony czas, wskaźniki podpowiedzi i odrzucenia.</p>
                     </div>
                     <div class="export-card" onclick="exportPerUserCSV()">
                         <div class="export-icon">👤</div>
-                        <h4>Per-user summary (CSV)</h4>
-                        <p>Zagregowane wyniki per uczestnik</p>
-                    </div>
-                    <div class="export-card" onclick="exportAllJSON()">
-                        <div class="export-icon">{ }</div>
-                        <h4>Wszystkie logi (JSON)</h4>
-                        <p>Surowe dane — pełna struktura logów</p>
+                        <h4>Agregacja per uczestnik</h4>
+                        <p>Podsumowanie każdego gracza - jego skuteczność, czasy i używane podpowiedzi.</p>
                     </div>
                     <div class="export-card" onclick="exportTaxonomyCSV()">
                         <div class="export-icon">🏷️</div>
-                        <h4>Taksonomia (CSV)</h4>
-                        <p>Accuracy per kategoria per grupa wiekowa</p>
+                        <h4>Macierz Taksonomii</h4>
+                        <p>Zestawienie skuteczności w podziale na kategorie oraz grupy wiekowe.</p>
+                    </div>
+                    <div class="export-card" onclick="exportAllJSON()">
+                        <div class="export-icon">{ }</div>
+                        <h4>Surowe dane JSON</h4>
+                        <p>Kompletny backup wszystkich zebranych logów bez parsowania.</p>
                     </div>
                 </div>
             </div>
