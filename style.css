@@ -159,6 +159,39 @@ body {
     cursor: pointer;
     font-weight: 700;
     text-transform: uppercase;
+    transition: all 0.2s;
+}
+
+.btn-hint-small:hover {
+    background: var(--border-color);
+    color: white;
+}
+
+.btn-skip-small {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    background: white;
+    border: 1px solid #dc2626;
+    color: #dc2626;
+    cursor: pointer;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: all 0.2s;
+}
+
+.btn-skip-small:hover {
+    background: #dc2626;
+    color: white;
+}
+
+.clue-card.skipped {
+    border-left-color: #f59e0b;
+    background: #fffbeb;
+}
+
+.timer-badge.skipped {
+    background: #f59e0b;
+    font-size: 0.75rem;
 }
 
 .word-inputs {

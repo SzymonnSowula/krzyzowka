@@ -5,247 +5,242 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Krzyżówka Badawcza</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg-color: #cbd5e1;
+            --paper-bg: #ffffff;
+            --border-color: #1e293b;
+            --accent-color: #0f172a;
+            --text-color: #1e293b;
+            --muted: #64748b;
+            --green: #22c55e;
+            --amber: #f59e0b;
+            --red: #dc2626;
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Outfit', 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             min-height: 100vh;
-            padding: 20px;
+            padding: 1.5rem;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+        .container { max-width: 1400px; margin: 0 auto; }
 
         h1 {
             text-align: center;
-            color: white;
-            margin-bottom: 30px;
             font-size: 2.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
         }
+
+        .subtitle {
+            text-align: center;
+            color: var(--muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .refresh-btn {
+            display: block;
+            margin: 0 auto 2rem;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover { transform: translateY(-2px); box-shadow: 4px 4px 0 rgba(0,0,0,0.2); }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
 
         .stat-card {
             background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            transition: transform 0.2s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            box-shadow: 6px 6px 0 rgba(0,0,0,0.08);
         }
 
         .stat-card h3 {
-            color: #666;
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
         }
 
         .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #667eea;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--accent-color);
         }
 
         .stat-secondary {
-            font-size: 0.9rem;
-            color: #999;
-            margin-top: 5px;
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 0.25rem;
         }
 
-        .charts-section {
+        .section-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        .chart-card {
+        .card {
             background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            box-shadow: 6px 6px 0 rgba(0,0,0,0.08);
         }
 
-        .chart-card h3 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .data-table {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            overflow-x: auto;
-        }
-
-        .data-table h3 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            text-align: left;
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-        }
-
-        th {
-            background: #f8f9fa;
-            font-weight: 600;
-            color: #667eea;
-        }
-
-        tr:hover {
-            background: #f8f9fa;
-        }
-
-        .badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .badge-hint {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .badge-manual {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .difficulty-bar {
-            height: 20px;
-            background: linear-gradient(to right, #28a745 0%, #ffc107 50%, #dc3545 100%);
-            border-radius: 10px;
-            position: relative;
-        }
-
-        .difficulty-marker {
-            position: absolute;
-            top: -5px;
-            width: 4px;
-            height: 30px;
-            background: #333;
-            border-radius: 2px;
-        }
-
-        .refresh-btn {
-            background: white;
-            color: #667eea;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
+        .card h3 {
             font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: all 0.2s;
-            display: block;
-            margin: 20px auto;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border-color);
         }
 
-        .refresh-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
-
-        .export-section {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            margin-bottom: 30px;
+        .export-row {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
         }
 
         .export-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 20px;
+            background: white;
+            border: 1px solid var(--border-color);
+            padding: 0.6rem 1.5rem;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
             cursor: pointer;
-            margin-right: 10px;
-            margin-top: 10px;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.2s;
         }
 
-        .export-btn:hover {
-            background: #764ba2;
+        .export-btn:hover { background: var(--accent-color); color: white; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #e2e8f0; }
+        th { font-weight: 700; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 1px; color: var(--muted); background: #f8fafc; }
+        tr:hover { background: #f8fafc; }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-completed { background: #dcfce7; color: #166534; }
+        .badge-skipped { background: #fef3c7; color: #92400e; }
+        .badge-hint { background: #e0e7ff; color: #3730a3; }
+
+        .difficulty-dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .diff-easy { background: var(--green); }
+        .diff-medium { background: var(--amber); }
+        .diff-hard { background: var(--red); }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            .section-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            h1 { font-size: 1.5rem; letter-spacing: 2px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📊 Dashboard Krzyżówki Badawczej</h1>
+        <h1>Dashboard Badawczy</h1>
+        <p class="subtitle">Panel analityczny — Krzyżówka badawcza</p>
 
-        <button class="refresh-btn" onclick="loadData()">🔄 Odśwież dane</button>
+        <button class="refresh-btn" onclick="loadData()">↻ Odśwież dane</button>
 
         <div class="stats-grid" id="stats-grid">
-            <!-- Statystyki będą tutaj -->
+            <div class="stat-card"><h3>Ładowanie...</h3><div class="stat-value">—</div></div>
         </div>
 
-        <div class="export-section">
-            <h3>Eksport danych</h3>
-            <button class="export-btn" onclick="exportToCSV()">📄 Eksport CSV</button>
-            <button class="export-btn" onclick="exportToJSON()">📦 Eksport JSON</button>
+        <div class="export-row">
+            <button class="export-btn" onclick="exportToCSV()">↓ Eksport CSV</button>
+            <button class="export-btn" onclick="exportToJSON()">↓ Eksport JSON</button>
+            <button class="export-btn" onclick="exportFullReport()">↓ Pełny raport CSV</button>
         </div>
 
-        <div class="charts-section">
-            <div class="chart-card">
+        <div class="section-grid">
+            <div class="card">
                 <h3>Czas rozwiązywania (średni per hasło)</h3>
                 <canvas id="timeChart"></canvas>
             </div>
-            <div class="chart-card">
-                <h3>Wskaźnik trudności (Hint Ratio)</h3>
+            <div class="card">
+                <h3>Wskaźnik trudności (Hint Ratio %)</h3>
                 <canvas id="difficultyChart"></canvas>
             </div>
         </div>
 
-        <div class="charts-section">
-            <div class="chart-card">
-                <h3>Kolejność rozwiązywania haseł</h3>
-                <canvas id="orderChart"></canvas>
+        <div class="section-grid">
+            <div class="card">
+                <h3>Rozkład grup wiekowych</h3>
+                <canvas id="ageChart"></canvas>
             </div>
-            <div class="chart-card">
+            <div class="card">
                 <h3>Tempo pisania (ms między literami)</h3>
                 <canvas id="typingSpeedChart"></canvas>
             </div>
         </div>
 
-        <div class="data-table">
+        <div class="card" style="margin-bottom: 2rem;">
             <h3>Szczegółowe dane użytkowników</h3>
             <table id="users-table">
                 <thead>
                     <tr>
                         <th>Użytkownik</th>
-                        <th>Ukończone hasła</th>
-                        <th>Średni czas</th>
+                        <th>Grupa wiekowa</th>
+                        <th>Rozwiązane</th>
+                        <th>Pominięte</th>
+                        <th>Śr. czas (s)</th>
+                        <th>Mediana (s)</th>
                         <th>Podpowiedzi</th>
                         <th>Błędy</th>
                         <th>Backspace</th>
@@ -255,16 +250,19 @@
             </table>
         </div>
 
-        <div class="data-table">
+        <div class="card">
             <h3>Analiza trudności haseł</h3>
             <table id="words-table">
                 <thead>
                     <tr>
                         <th>Hasło</th>
-                        <th>Definicja</th>
-                        <th>Średni czas</th>
+                        <th>Długość</th>
+                        <th>Rozwiązane</th>
+                        <th>Pominięte</th>
+                        <th>Śr. czas (s)</th>
+                        <th>Mediana (s)</th>
                         <th>Hint Ratio</th>
-                        <th>Błędy/Hasło</th>
+                        <th>Śr. błędy</th>
                         <th>Trudność</th>
                     </tr>
                 </thead>
@@ -281,10 +279,24 @@
             try {
                 const response = await fetch('/api/logs');
                 allLogs = await response.json();
+                if (!Array.isArray(allLogs)) allLogs = [];
                 updateDashboard();
             } catch (err) {
-                alert('Błąd ładowania danych: ' + err.message);
+                console.error('Błąd ładowania:', err);
+                document.getElementById('stats-grid').innerHTML = '<div class="empty-state">Błąd ładowania danych: ' + err.message + '</div>';
             }
+        }
+
+        // Helpers
+        function median(arr) {
+            if (!arr.length) return 0;
+            const s = [...arr].sort((a, b) => a - b);
+            const mid = Math.floor(s.length / 2);
+            return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
+        }
+
+        function avg(arr) {
+            return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
         }
 
         function updateDashboard() {
@@ -295,24 +307,34 @@
         }
 
         function updateStats() {
-            const completedWords = allLogs.filter(l => l.action === 'word_completed');
-            const users = [...new Set(allLogs.map(l => l.userId))];
-            const uniqueWords = [...new Set(completedWords.map(l => l.details?.word).filter(Boolean))];
+            const completed = allLogs.filter(l => l.action === 'word_completed');
+            const skipped = allLogs.filter(l => l.action === 'word_skipped');
+            const users = [...new Set(allLogs.map(l => l.userId).filter(Boolean))];
+            const uniqueWords = [...new Set(completed.map(l => l.details?.word).filter(Boolean))];
 
-            const avgTime = completedWords.length > 0
-                ? completedWords.reduce((sum, l) => sum + (l.details?.durationMs || 0), 0) / completedWords.length
-                : 0;
+            const times = completed.map(l => l.details?.durationMs || 0).filter(t => t > 0);
+            const avgTime = avg(times);
+            const medTime = median(times);
 
             const totalHints = allLogs.filter(l => l.action === 'hint_used').length;
             const totalErrors = allLogs.filter(l => l.action === 'incorrect_letter').length;
 
+            const demographics = allLogs.filter(l => l.action === 'demographics_collected');
+            const ageGroups = {};
+            demographics.forEach(l => {
+                const g = l.details?.ageGroup || 'unknown';
+                ageGroups[g] = (ageGroups[g] || 0) + 1;
+            });
+            const ageStr = Object.entries(ageGroups).map(([k, v]) => `${k}: ${v}`).join(', ') || '—';
+
             const stats = [
-                { title: 'Uczestników', value: users.length, secondary: 'unikalnych użytkowników' },
-                { title: 'Ukończonych haseł', value: completedWords.length, secondary: 'łącznie' },
-                { title: 'Unikalnych haseł', value: uniqueWords.length, secondary: 'w bazie' },
-                { title: 'Średni czas', value: (avgTime / 1000).toFixed(1) + 's', secondary: 'per hasło' },
-                { title: 'Użytych podpowiedzi', value: totalHints, secondary: 'łącznie' },
-                { title: 'Błędnych liter', value: totalErrors, secondary: 'łącznie' }
+                { title: 'Uczestników', value: users.length, secondary: 'unikalnych sesji' },
+                { title: 'Rozwiązanych haseł', value: completed.length, secondary: `z ${completed.length + skipped.length} prób` },
+                { title: 'Pominiętych (nie umiem)', value: skipped.length, secondary: `${completed.length + skipped.length > 0 ? ((skipped.length / (completed.length + skipped.length)) * 100).toFixed(1) : 0}% skip rate` },
+                { title: 'Średni czas', value: (avgTime / 1000).toFixed(2) + 's', secondary: `mediana: ${(medTime / 1000).toFixed(2)}s` },
+                { title: 'Podpowiedzi', value: totalHints, secondary: `${completed.length > 0 ? (totalHints / completed.length).toFixed(2) : 0} per hasło` },
+                { title: 'Błędne litery', value: totalErrors, secondary: `${completed.length > 0 ? (totalErrors / completed.length).toFixed(2) : 0} per hasło` },
+                { title: 'Grupy wiekowe', value: Object.keys(ageGroups).length, secondary: ageStr }
             ];
 
             document.getElementById('stats-grid').innerHTML = stats.map(s => `
@@ -327,7 +349,7 @@
         function updateCharts() {
             const completed = allLogs.filter(l => l.action === 'word_completed');
 
-            // Średni czas per hasło (top 15)
+            // Avg time per word
             const wordTimes = {};
             completed.forEach(l => {
                 const w = l.details?.word;
@@ -338,36 +360,35 @@
             });
 
             const avgTimes = Object.entries(wordTimes)
-                .map(([word, times]) => ({
-                    word,
-                    avg: times.reduce((a,b) => a+b, 0) / times.length
-                }))
-                .sort((a,b) => b.avg - a.avg)
-                .slice(0, 15);
+                .map(([word, times]) => ({ word, avg: avg(times) }))
+                .sort((a, b) => b.avg - a.avg);
 
-            updateChart('timeChart', 'bar', avgTimes.map(d => d.word), avgTimes.map(d => d.avg), 'Czas (s)');
+            renderChart('timeChart', 'bar', avgTimes.map(d => d.word), avgTimes.map(d => parseFloat(d.avg.toFixed(2))), 'Czas (s)', 'rgba(15, 23, 43, 0.7)', 'rgba(15, 23, 43, 1)');
 
-            // Hint ratio per hasło
-            const hintRatios = Object.entries(wordTimes).map(([word, _, idx]) => {
-                const wordLogs = completed.filter(l => l.details?.word === word);
-                const avgHint = wordLogs.reduce((sum, l) => sum + (l.details?.hintRatio || 0), 0) / wordLogs.length;
+            // Hint ratio
+            const hintRatios = Object.entries(wordTimes).map(([word]) => {
+                const wLogs = completed.filter(l => l.details?.word === word);
+                const avgHint = avg(wLogs.map(l => l.details?.hintRatio || 0));
                 return { word, avgHint };
-            }).sort((a,b) => b.avgHint - a.avgHint).slice(0, 15);
+            }).sort((a, b) => b.avgHint - a.avgHint);
 
-            updateChart('difficultyChart', 'bar', hintRatios.map(d => d.word), hintRatios.map(d => d.avgHint * 100), 'Hint Ratio (%)');
+            renderChart('difficultyChart', 'bar', hintRatios.map(d => d.word), hintRatios.map(d => parseFloat((d.avgHint * 100).toFixed(1))), 'Hint Ratio (%)', 'rgba(245, 158, 11, 0.7)', 'rgba(245, 158, 11, 1)');
 
-            // Kolejność rozwiązywania
-            const orderData = {};
-            completed.forEach(l => {
-                const order = l.details?.solveOrder;
-                if (order) {
-                    orderData[order] = (orderData[order] || 0) + 1;
-                }
+            // Age groups
+            const demographics = allLogs.filter(l => l.action === 'demographics_collected');
+            const ageGroups = {};
+            demographics.forEach(l => {
+                const g = l.details?.ageGroup || 'unknown';
+                ageGroups[g] = (ageGroups[g] || 0) + 1;
             });
 
-            updateChart('orderChart', 'line', Object.keys(orderData), Object.values(orderData), 'Liczba ukończeń');
+            const ageLabels = Object.keys(ageGroups);
+            const ageValues = Object.values(ageGroups);
+            const ageColors = ['rgba(34,197,94,0.7)', 'rgba(59,130,246,0.7)', 'rgba(245,158,11,0.7)', 'rgba(220,38,38,0.7)'];
 
-            // Tempo pisania
+            renderChart('ageChart', 'doughnut', ageLabels, ageValues, 'Uczestników', ageColors.slice(0, ageLabels.length), ageColors.slice(0, ageLabels.length));
+
+            // Typing speed
             const typingSpeeds = {};
             completed.forEach(l => {
                 const w = l.details?.word;
@@ -379,42 +400,35 @@
             });
 
             const avgSpeeds = Object.entries(typingSpeeds)
-                .map(([word, speeds]) => ({
-                    word,
-                    avg: speeds.reduce((a,b) => a+b, 0) / speeds.length
-                }))
-                .sort((a,b) => b.avg - a.avg)
-                .slice(0, 15);
+                .map(([word, speeds]) => ({ word, avg: avg(speeds) }))
+                .sort((a, b) => b.avg - a.avg);
 
-            updateChart('typingSpeedChart', 'bar', avgSpeeds.map(d => d.word), avgSpeeds.map(d => d.avg), 'ms między literami');
+            renderChart('typingSpeedChart', 'bar', avgSpeeds.map(d => d.word), avgSpeeds.map(d => Math.round(d.avg)), 'ms między literami', 'rgba(99,102,241,0.7)', 'rgba(99,102,241,1)');
         }
 
-        function updateChart(id, type, labels, data, label) {
-            const ctx = document.getElementById(id).getContext('2d');
+        function renderChart(id, type, labels, data, label, bgColor, borderColor) {
+            const ctx = document.getElementById(id)?.getContext('2d');
+            if (!ctx) return;
+            if (charts[id]) charts[id].destroy();
 
-            if (charts[id]) {
-                charts[id].destroy();
-            }
+            const isArray = Array.isArray(bgColor);
 
             charts[id] = new Chart(ctx, {
-                type: type,
+                type,
                 data: {
-                    labels: labels,
+                    labels,
                     datasets: [{
-                        label: label,
-                        data: data,
-                        backgroundColor: 'rgba(102, 126, 234, 0.7)',
-                        borderColor: 'rgba(102, 126, 234, 1)',
+                        label,
+                        data,
+                        backgroundColor: isArray ? bgColor : bgColor,
+                        borderColor: isArray ? borderColor : borderColor,
                         borderWidth: 1
                     }]
                 },
                 options: {
                     responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
+                    plugins: { legend: { display: type === 'doughnut' } },
+                    ...(type !== 'doughnut' ? { scales: { y: { beginAtZero: true } } } : {})
                 }
             });
         }
@@ -423,118 +437,134 @@
             const users = {};
             allLogs.forEach(l => {
                 const u = l.userId;
-                if (!users[u]) {
-                    users[u] = { words: 0, times: [], hints: 0, errors: 0, backspaces: 0 };
+                if (!u) return;
+                if (!users[u]) users[u] = { completed: 0, skipped: 0, times: [], hints: 0, errors: 0, backspaces: 0, ageGroup: '—' };
+
+                if (l.action === 'demographics_collected') {
+                    users[u].ageGroup = l.details?.ageGroup || '—';
                 }
                 if (l.action === 'word_completed') {
-                    users[u].words++;
+                    users[u].completed++;
                     users[u].times.push(l.details?.durationSeconds || 0);
                     users[u].hints += l.details?.hintCount || 0;
                     users[u].errors += l.details?.incorrectAttempts || 0;
                     users[u].backspaces += l.details?.backspaceCount || 0;
                 }
+                if (l.action === 'word_skipped') {
+                    users[u].skipped++;
+                }
             });
 
             const tbody = document.querySelector('#users-table tbody');
-            tbody.innerHTML = Object.entries(users).map(([user, data]) => {
-                const avgTime = data.times.length > 0 ? (data.times.reduce((a,b) => a+b, 0) / data.times.length).toFixed(1) : 0;
-                return `
-                    <tr>
-                        <td><strong>${user}</strong></td>
-                        <td>${data.words}</td>
-                        <td>${avgTime}s</td>
-                        <td>${data.hints}</td>
-                        <td>${data.errors}</td>
-                        <td>${data.backspaces}</td>
-                    </tr>
-                `;
+            const entries = Object.entries(users).filter(([, d]) => d.completed > 0 || d.skipped > 0);
+
+            if (entries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="empty-state">Brak danych</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = entries.map(([user, data]) => {
+                const avgT = avg(data.times).toFixed(2);
+                const medT = median(data.times).toFixed(2);
+                return `<tr>
+                    <td><strong>${user}</strong></td>
+                    <td>${data.ageGroup}</td>
+                    <td>${data.completed}</td>
+                    <td>${data.skipped}</td>
+                    <td>${avgT}</td>
+                    <td>${medT}</td>
+                    <td>${data.hints}</td>
+                    <td>${data.errors}</td>
+                    <td>${data.backspaces}</td>
+                </tr>`;
             }).join('');
         }
 
         function updateWordsTable() {
             const words = {};
-            allLogs.filter(l => l.action === 'word_completed').forEach(l => {
+            allLogs.filter(l => l.action === 'word_completed' || l.action === 'word_skipped').forEach(l => {
                 const w = l.details?.word;
-                const clue = allLogs.find(x => x.details?.word === w && x.action === 'word_focused')?.details?.clue || '';
-                if (w) {
-                    if (!words[w]) {
-                        words[w] = { times: [], hints: [], errors: [], clue };
-                    }
+                if (!w) return;
+                if (!words[w]) words[w] = { length: l.details?.length || w.length, completed: 0, skipped: 0, times: [], hints: [], errors: [] };
+
+                if (l.action === 'word_completed') {
+                    words[w].completed++;
                     words[w].times.push(l.details?.durationSeconds || 0);
                     words[w].hints.push(l.details?.hintRatio || 0);
                     words[w].errors.push(l.details?.incorrectAttempts || 0);
+                } else {
+                    words[w].skipped++;
                 }
             });
 
             const tbody = document.querySelector('#words-table tbody');
-            tbody.innerHTML = Object.entries(words).map(([word, data]) => {
-                const avgTime = (data.times.reduce((a,b) => a+b, 0) / data.times.length).toFixed(1);
-                const avgHint = ((data.hints.reduce((a,b) => a+b, 0) / data.hints.length) * 100).toFixed(0);
-                const avgErrors = (data.errors.reduce((a,b) => a+b, 0) / data.errors.length).toFixed(1);
+            const entries = Object.entries(words);
 
-                let difficulty = '🟢';
-                if (avgHint > 30) difficulty = '🔴';
-                else if (avgHint > 15) difficulty = '🟡';
+            if (entries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="empty-state">Brak danych</td></tr>';
+                return;
+            }
 
-                return `
-                    <tr>
-                        <td><strong>${word}</strong></td>
-                        <td>${data.clue || '-'}</td>
-                        <td>${avgTime}s</td>
-                        <td>${avgHint}%</td>
-                        <td>${avgErrors}</td>
-                        <td>${difficulty}</td>
-                    </tr>
-                `;
-            }).sort((a,b) => b.avgHint - a.avgHint).join('');
+            tbody.innerHTML = entries.map(([word, data]) => {
+                const avgT = avg(data.times).toFixed(2);
+                const medT = median(data.times).toFixed(2);
+                const avgHint = (avg(data.hints) * 100).toFixed(1);
+                const avgErr = avg(data.errors).toFixed(2);
+                const total = data.completed + data.skipped;
+                const skipRate = total > 0 ? (data.skipped / total * 100) : 0;
+
+                // Difficulty score: combined hint ratio + skip rate + error rate
+                const diffScore = parseFloat(avgHint) + skipRate + parseFloat(avgErr) * 10;
+                let diffClass = 'diff-easy';
+                if (diffScore > 40) diffClass = 'diff-hard';
+                else if (diffScore > 15) diffClass = 'diff-medium';
+
+                return `<tr>
+                    <td><strong>${word}</strong></td>
+                    <td>${data.length}</td>
+                    <td>${data.completed}</td>
+                    <td>${data.skipped}</td>
+                    <td>${avgT}</td>
+                    <td>${medT}</td>
+                    <td>${avgHint}%</td>
+                    <td>${avgErr}</td>
+                    <td><span class="difficulty-dot ${diffClass}"></span></td>
+                </tr>`;
+            }).sort().join('');
         }
 
         function exportToCSV() {
             const completed = allLogs.filter(l => l.action === 'word_completed');
-            if (completed.length === 0) {
-                alert('Brak danych do eksportu');
-                return;
-            }
+            if (!completed.length) { alert('Brak danych'); return; }
 
-            const headers = ['userId', 'timestamp', 'word', 'length', 'durationSeconds', 'method', 'solveOrder',
-                           'thinkTimeMs', 'typingSpeedMs', 'incorrectAttempts', 'backspaceCount', 'hintCount', 'hintRatio'];
-
-            const rows = completed.map(l => [
-                l.userId,
-                l.timestamp,
-                l.details?.word,
-                l.details?.length,
-                l.details?.durationSeconds,
-                l.details?.method,
-                l.details?.solveOrder,
-                l.details?.thinkTimeMs,
-                l.details?.typingSpeedMs,
-                l.details?.incorrectAttempts,
-                l.details?.backspaceCount,
-                l.details?.hintCount,
-                l.details?.hintRatio
-            ]);
-
-            const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-            downloadFile(csv, 'krzyzowka_dane.csv', 'text/csv');
+            const headers = ['userId','timestamp','word','length','durationSeconds','method','solveOrder','thinkTimeMs','typingSpeedMs','incorrectAttempts','backspaceCount','hintCount','hintRatio'];
+            const rows = completed.map(l => headers.map(h => h === 'userId' ? l.userId : h === 'timestamp' ? l.timestamp : l.details?.[h] ?? ''));
+            downloadFile([headers.join(';'), ...rows.map(r => r.join(';'))].join('\n'), 'krzyzowka_completed.csv', 'text/csv;charset=utf-8');
         }
 
         function exportToJSON() {
-            const dataStr = JSON.stringify(allLogs, null, 2);
-            downloadFile(dataStr, 'krzyzowka_dane.json', 'application/json');
+            downloadFile(JSON.stringify(allLogs, null, 2), 'krzyzowka_all_logs.json', 'application/json');
+        }
+
+        function exportFullReport() {
+            const relevant = allLogs.filter(l => ['word_completed', 'word_skipped', 'demographics_collected'].includes(l.action));
+            const headers = ['userId','timestamp','action','ageGroup','word','length','durationSeconds','method','solveOrder','thinkTimeMs','typingSpeedMs','incorrectAttempts','backspaceCount','hintCount','hintRatio','lettersFilledBeforeSkip'];
+            const rows = relevant.map(l => {
+                const d = l.details || {};
+                return [l.userId, l.timestamp, l.action, d.ageGroup||'', d.word||'', d.length||'', d.durationSeconds||'', d.method||'', d.solveOrder||'', d.thinkTimeMs||'', d.typingSpeedMs||'', d.incorrectAttempts||'', d.backspaceCount||'', d.hintCount||'', d.hintRatio||'', d.lettersFilledBeforeSkip||''].join(';');
+            });
+            downloadFile('\uFEFF' + [headers.join(';'), ...rows].join('\n'), 'krzyzowka_full_report.csv', 'text/csv;charset=utf-8');
         }
 
         function downloadFile(content, filename, type) {
             const blob = new Blob([content], { type });
-            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
+            a.href = URL.createObjectURL(blob);
             a.download = filename;
             a.click();
-            URL.revokeObjectURL(url);
+            URL.revokeObjectURL(a.href);
         }
 
-        // Ładuj dane przy starcie
         loadData();
     </script>
 </body>

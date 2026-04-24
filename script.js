@@ -166,6 +166,12 @@ function renderClueList() {
         hintBtn.onclick = () => giveHintForWord(wIdx);
         actionsArea.appendChild(hintBtn);
         
+        const skipBtn = document.createElement('button');
+        skipBtn.innerText = 'NIE UMIEM';
+        skipBtn.classList.add('btn-skip-small');
+        skipBtn.onclick = () => skipWord(wIdx);
+        actionsArea.appendChild(skipBtn);
+        
         header.appendChild(actionsArea);
         
         const inputRow = document.createElement('div');
@@ -404,6 +410,53 @@ function giveHintForWord(wIdx) {
             return;
         }
     }
+}
+
+function skipWord(wIdx) {
+    const w = words[wIdx];
+    if (w.isCompleted) return;
+
+    startTimer(wIdx);
+
+    // Wypełnij wszystkie litery
+    const inputs = document.querySelectorAll(`input[data-widx="${wIdx}"]`);
+    for (let i = 0; i < w.answer.length; i++) {
+        inputs[i].value = w.answer[i];
+        inputs[i].parentElement.classList.add('correct');
+    }
+
+    // Oznacz jako pominięte
+    w.endTime = Date.now();
+    w.isCompleted = true;
+    w.solveOrder = ++globalSolveOrder;
+    clearInterval(w.timerInterval);
+
+    const durationMs = w.startTime ? w.endTime - w.startTime : 0;
+
+    const badge = document.getElementById(`timer-${wIdx}`);
+    if (badge) {
+        badge.classList.add('skipped');
+        badge.innerText = 'POMINIĘTE';
+    }
+
+    const card = document.getElementById(`card-${wIdx}`);
+    if (card) card.classList.add('skipped');
+
+    logAction('word_skipped', {
+        word: w.answer,
+        length: w.answer.length,
+        durationMs,
+        durationSeconds: parseFloat((durationMs / 1000).toFixed(1)),
+        level: currentLevel,
+        solveOrder: w.solveOrder,
+        thinkTimeMs: w.focusedAt ? w.focusedAt - w.renderTime : 0,
+        incorrectAttempts: w.incorrectAttempts,
+        backspaceCount: w.backspaceCount,
+        hintCount: w.hintCount,
+        lettersFilledBeforeSkip: Array.from(inputs).filter(i => i.value).length
+    });
+
+    checkCompletion();
 }
 
 // Funkcja wykrywająca przerwy/pauzy w aktywności
