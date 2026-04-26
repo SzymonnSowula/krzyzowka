@@ -574,7 +574,7 @@ function initDemographics() {
 }
 
 window.onload = async () => {
-    await initDemographics(); // Najpierw zbierz dane demograficzne
     await initUser();
+    await initDemographics(); // Następnie zbierz dane demograficzne, mając już userId
     await loadData();
 };
