@@ -203,9 +203,12 @@ function renderClueList() {
             input.dataset.widx = wIdx;
             input.dataset.cidx = i;
             
-            input.onfocus = () => {
+            input.onfocus = (e) => {
                 startTimer(wIdx);
                 const w = words[wIdx];
+                // Zaznaczamy obecny tekst, żeby łatwo było go nadpisać
+                setTimeout(() => e.target.select(), 0);
+                
                 // Czas zastanowienia - pierwszy fokus na hasło
                 if (!w.focusedAt) {
                     w.focusedAt = Date.now();
@@ -402,12 +405,33 @@ function stopTimer(wIdx, method = 'manual') {
 
 function focusNext(wIdx, cIdx) {
     const next = document.querySelector(`input[data-widx="${wIdx}"][data-cidx="${cIdx + 1}"]`);
-    if (next) next.focus();
+    if (next) {
+        next.focus();
+    } else {
+        // Jeśli to była ostatnia litera, przeskocz do pierwszego pustego pola w następnym haśle
+        const nextWordInputs = document.querySelectorAll(`input[data-widx="${wIdx + 1}"]`);
+        for (let i = 0; i < nextWordInputs.length; i++) {
+            if (nextWordInputs[i].value === "") {
+                nextWordInputs[i].focus();
+                break;
+            }
+        }
+    }
 }
 
 function focusPrev(wIdx, cIdx) {
     const prev = document.querySelector(`input[data-widx="${wIdx}"][data-cidx="${cIdx - 1}"]`);
-    if (prev) prev.focus();
+    if (prev) {
+        prev.focus();
+    } else {
+        // Skok do ostatniej litery poprzedniego hasła przy backspace
+        if (wIdx > 0) {
+            const prevWordInputs = document.querySelectorAll(`input[data-widx="${wIdx - 1}"]`);
+            if (prevWordInputs.length > 0) {
+                prevWordInputs[prevWordInputs.length - 1].focus();
+            }
+        }
+    }
 }
 
 function updateWordStatus(wIdx, method = 'manual') {
