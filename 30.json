@@ -24,18 +24,6 @@
     "kategoria": "Wiedza ogólna / encyklopedyczna"
   },
   {
-    "pytanie": "Autor tragedii \"Faust\"",
-    "liter": 6,
-    "odpowiedz": "GOETHE",
-    "kategoria": "Wiedza ogólna / encyklopedyczna"
-  },
-  {
-    "pytanie": "Samuraj bez seniora",
-    "liter": 5,
-    "odpowiedz": "RONIN",
-    "kategoria": "Wiedza ogólna / encyklopedyczna"
-  },
-  {
     "pytanie": "Podwodny grunt",
     "liter": 3,
     "odpowiedz": "DNO",
@@ -48,27 +36,15 @@
     "kategoria": "Definicje słownikowe"
   },
   {
+    "pytanie": "Np. Camp Nou",
+    "liter": 7,
+    "odpowiedz": "STADION",
+    "kategoria": "Definicje słownikowe"
+  },
+  {
     "pytanie": "Naprawa uszkodzenia",
     "liter": 9,
     "odpowiedz": "REPERACJA",
-    "kategoria": "Definicje słownikowe"
-  },
-  {
-    "pytanie": "Okrągłe skrzyżowanie",
-    "liter": 5,
-    "odpowiedz": "RONDO",
-    "kategoria": "Definicje słownikowe"
-  },
-  {
-    "pytanie": "Datek dla kelnera",
-    "liter": 7,
-    "odpowiedz": "NAPIWEK",
-    "kategoria": "Definicje słownikowe"
-  },
-  {
-    "pytanie": "Masa owocowa w pączku",
-    "liter": 9,
-    "odpowiedz": "MARMOLADA",
     "kategoria": "Definicje słownikowe"
   },
   {
@@ -90,27 +66,15 @@
     "kategoria": "Metafora i gra słowna"
   },
   {
-    "pytanie": "Kwatera diabła",
-    "liter": 6,
-    "odpowiedz": "PIEKŁO",
-    "kategoria": "Metafora i gra słowna"
-  },
-  {
-    "pytanie": "Połowica władcy zwierząt",
-    "liter": 5,
-    "odpowiedz": "LWICA",
-    "kategoria": "Metafora i gra słowna"
-  },
-  {
     "pytanie": "Obcy wtręt językowy",
     "liter": 10,
     "odpowiedz": "MAKARONIZM",
     "kategoria": "Metafora i gra słowna"
   },
   {
-    "pytanie": "Kaczor z kreskówek",
-    "liter": 6,
-    "odpowiedz": "DONALD",
+    "pytanie": "Agencja wywiadu USA",
+    "liter": 3,
+    "odpowiedz": "CIA",
     "kategoria": "Nazwy własne i popkultura"
   },
   {
@@ -120,27 +84,15 @@
     "kategoria": "Nazwy własne i popkultura"
   },
   {
+    "pytanie": "Kaczor z kreskówek",
+    "liter": 6,
+    "odpowiedz": "DONALD",
+    "kategoria": "Nazwy własne i popkultura"
+  },
+  {
     "pytanie": "Niemiecki rywal BMW",
     "liter": 4,
     "odpowiedz": "AUDI",
-    "kategoria": "Nazwy własne i popkultura"
-  },
-  {
-    "pytanie": "Stone, \"Nagi instynkt\"",
-    "liter": 6,
-    "odpowiedz": "SHARON",
-    "kategoria": "Nazwy własne i popkultura"
-  },
-  {
-    "pytanie": "Fallon, komik z TV",
-    "liter": 5,
-    "odpowiedz": "JIMMY",
-    "kategoria": "Nazwy własne i popkultura"
-  },
-  {
-    "pytanie": "Np. Camp Nou",
-    "liter": 7,
-    "odpowiedz": "STADION",
     "kategoria": "Nazwy własne i popkultura"
   },
   {
@@ -165,18 +117,6 @@
     "pytanie": "Kora w zespole Maanam",
     "liter": 10,
     "odpowiedz": "WOKALISTKA",
-    "kategoria": "Polskie realia kulturowe"
-  },
-  {
-    "pytanie": "Ludowa śpiewanka",
-    "liter": 7,
-    "odpowiedz": "PIOSNKA",
-    "kategoria": "Polskie realia kulturowe"
-  },
-  {
-    "pytanie": "Akt czci składany władcy",
-    "liter": 4,
-    "odpowiedz": "HOŁD",
     "kategoria": "Polskie realia kulturowe"
   }
 ]

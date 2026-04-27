@@ -35,6 +35,15 @@ async function initUser() {
     if (display) display.innerText = userId;
     
     logAction('session_start', { browser: navigator.userAgent });
+
+    // Detekcja "Googlowania" - czy użytkownik ukrył kartę przeglądarki
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            logAction('tab_hidden', { level: currentLevel });
+        } else {
+            logAction('tab_visible', { level: currentLevel });
+        }
+    });
 }
 
 async function logAction(action, details) {
@@ -213,6 +222,17 @@ function renderClueList() {
             input.oninput = (e) => {
                 const w = words[wIdx];
                 const now = Date.now();
+                
+                // Złapanie pauzy w momencie gdy użytkownik WRACA do aktywności
+                if (lastActivityTime && (now - lastActivityTime > 5000)) {
+                    const pauseDuration = now - lastActivityTime;
+                    logAction('pause_detected', {
+                        word: w.answer,
+                        pauseDurationMs: pauseDuration,
+                        pauseDurationSec: (pauseDuration / 1000).toFixed(1),
+                        level: currentLevel
+                    });
+                }
                 lastActivityTime = now;
 
                 e.target.value = e.target.value.toUpperCase();
@@ -259,6 +279,26 @@ function renderClueList() {
                 }
             };
             
+            input.onblur = () => {
+                const w = words[wIdx];
+                if (!w.isCompleted) {
+                    // Logujemy porzucenie słowa, aby śledzić "skakanie" po krzyżówce
+                    logAction('word_blurred', {
+                        word: w.answer,
+                        level: currentLevel,
+                        lettersFilledSoFar: Array.from(document.querySelectorAll(`input[data-widx="${wIdx}"]`)).filter(i => i.value).length
+                    });
+                }
+            };
+
+            input.onpaste = (e) => {
+                logAction('paste_detected', {
+                    word: words[wIdx].answer,
+                    level: currentLevel,
+                    pastedText: e.clipboardData.getData('text')
+                });
+            };
+
             box.appendChild(input);
             inputRow.appendChild(box);
         }
@@ -471,31 +511,8 @@ function skipWord(wIdx) {
     checkCompletion();
 }
 
-// Funkcja wykrywająca przerwy/pauzy w aktywności
-function checkForPauses() {
-    if (!lastActivityTime) return;
-
-    const now = Date.now();
-    const pauseThreshold = 5000; // 5 sekund przerwy
-    const timeSinceLastActivity = now - lastActivityTime;
-
-    if (timeSinceLastActivity > pauseThreshold) {
-        // Szukamy aktywnego hasła (tego, na którym użytkownik ostatnio pracował)
-        const activeWord = words.find(w => !w.isCompleted && w.focusedAt);
-        if (activeWord) {
-            logAction('pause_detected', {
-                word: activeWord.answer,
-                pauseDurationMs: timeSinceLastActivity,
-                pauseDurationSec: (timeSinceLastActivity / 1000).toFixed(1),
-                level: currentLevel
-            });
-        }
-        lastActivityTime = now; // Reset po zalogowaniu
-    }
-}
-
-// Sprawdzamy przerwy co 1 sekundę
-setInterval(checkForPauses, 1000);
+// Zastępujemy ciągłe odpytywanie setInterval na logowanie po wznowieniu aktywności.
+// (Główna logika została przeniesiona do input.oninput, to puste miejsce celowo usunięte)
 
 function checkCompletion() {
     const allCorrect = words.every(w => w.isCompleted);

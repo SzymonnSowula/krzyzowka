@@ -194,20 +194,51 @@ function processData() {
 
     const catTbody = document.querySelector('#taxonomy-table tbody');
     catTbody.innerHTML = '';
-    catStats.sort((a,b) => b.total - a.total).forEach(c => {
+    catStats.sort((a,b) => b.total - a.total).forEach((c, idx) => {
+        // Obliczamy statystyki dla słów w tej kategorii
+        const cWordsList = [...new Set(wordsData.filter(w => (w.kategoria || 'Brak') === c.category).map(w => w.word))];
+        let subRowsHtml = '';
+        
+        cWordsList.forEach(word => {
+            const wData = wordsData.filter(w => w.word === word && (w.kategoria || 'Brak') === c.category);
+            const wCompleted = wData.filter(w => w.action === 'word_completed');
+            const wSkipped = wData.filter(w => w.action === 'word_skipped');
+            const total = wData.length;
+            const cTimes = wCompleted.map(w => w.durationSeconds || 0);
+            const accuracy = total ? (wCompleted.length / total) * 100 : 0;
+            const avgTime = cTimes.length ? cTimes.reduce((a,b) => a+b, 0) / cTimes.length : 0;
+            const avgHints = total ? wData.reduce((sum, w) => sum + (w.hintCount || 0), 0) / total : 0;
+            
+            subRowsHtml += `
+                <tr class="cat-details cat-details-${idx}" style="display: none; background-color: #f8fafc; font-size: 0.9em;">
+                    <td style="padding-left: 2.5rem; border-left: 3px solid #cbd5e1; color: #475569;">↳ <strong>${word}</strong></td>
+                    <td style="color: #64748b;">${total}</td>
+                    <td style="color: #64748b;">${wCompleted.length}</td>
+                    <td style="color: #64748b;">${wCompleted.length - wCompleted.filter(w => w.cleanSolve).length}</td>
+                    <td style="color: #64748b;">${wSkipped.length}</td>
+                    <td style="color: #64748b;">${accuracy.toFixed(1)}%</td>
+                    <td style="color: #64748b;">${avgTime.toFixed(1)}</td>
+                    <td style="color: #64748b;">${getMedian(cTimes).toFixed(1)}</td>
+                    <td style="color: #64748b;">${avgHints.toFixed(2)}</td>
+                    <td style="color: #64748b;">${(total ? wSkipped.length / total * 100 : 0).toFixed(1)}%</td>
+                </tr>
+            `;
+        });
+
         catTbody.innerHTML += `
-            <tr>
-                <td><span class="badge-cat badge-${(c.category || 'brak').toLowerCase()}">${c.category}</span></td>
-                <td>${c.total}</td>
+            <tr style="cursor: pointer;" onclick="document.querySelectorAll('.cat-details-${idx}').forEach(el => el.style.display = el.style.display === 'none' ? 'table-row' : 'none')" title="Kliknij, aby rozwinąć hasła">
+                <td><span class="badge-cat badge-${(c.category || 'brak').toLowerCase()}">${c.category}</span> <span style="font-size:0.7em; color:#94a3b8; margin-left: 0.5rem;">▼ rozwiń</span></td>
+                <td><strong>${c.total}</strong></td>
                 <td>${c.completed}</td>
                 <td>${c.withHints}</td>
                 <td>${c.skipped}</td>
-                <td>${c.accuracy.toFixed(1)}%</td>
+                <td><strong>${c.accuracy.toFixed(1)}%</strong></td>
                 <td>${c.avgTime.toFixed(1)}</td>
                 <td>${c.medianTime.toFixed(1)}</td>
                 <td>${c.avgHints.toFixed(2)}</td>
                 <td>${c.skipRate.toFixed(1)}%</td>
             </tr>
+            ${subRowsHtml}
         `;
     });
 
