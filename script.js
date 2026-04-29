@@ -6,6 +6,7 @@ let userId = null;
 let globalSolveOrder = 0; // Licznik kolejności rozwiązywania
 let lastActivityTime = null; // Do śledzenia przerw/pauz
 let userDemographics = null; // Dane demograficzne użytkownika
+let isLevelCompleting = false; // Zapobiega wielokrotnemu wywołaniu checkCompletion
 
 async function initUser() {
     // Try to get userId from sessionStorage first (so it persists across refreshes in the same session)
@@ -99,6 +100,7 @@ async function loadData() {
 
 function generateLevel() {
     console.log('Generating level...');
+    isLevelCompleting = false;
     try {
         let selected;
         
@@ -206,8 +208,12 @@ function renderClueList() {
             input.onfocus = (e) => {
                 startTimer(wIdx);
                 const w = words[wIdx];
-                // Zaznaczamy obecny tekst, żeby łatwo było go nadpisać
-                setTimeout(() => e.target.select(), 0);
+                // Zaznaczamy obecny tekst, żeby łatwo było go nadpisać, ale tylko jeśli input wciąż ma focus
+                setTimeout(() => {
+                    if (document.activeElement === e.target) {
+                        e.target.select();
+                    }
+                }, 0);
                 
                 // Czas zastanowienia - pierwszy fokus na hasło
                 if (!w.focusedAt) {
@@ -541,7 +547,8 @@ function skipWord(wIdx) {
 function checkCompletion() {
     const allCorrect = words.every(w => w.isCompleted);
     
-    if (allCorrect && words.length > 0) {
+    if (allCorrect && words.length > 0 && !isLevelCompleting) {
+        isLevelCompleting = true;
         setTimeout(() => {
             if (currentLevel === 1) {
                 alert('Świetnie! Zakończyłeś pierwszą rundę (1 z 2).\n\nZaraz rozpocznie się druga, ostatnia runda z nowymi hasłami.');
