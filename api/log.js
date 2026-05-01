@@ -19,11 +19,61 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // Zabezpieczenie kluczem API (proste, ale utrudnia botom życie)
+  const apiKey = req.headers['x-api-key'];
+  const expectedKey = process.env.API_SECRET_KEY;
+  if (expectedKey && apiKey !== expectedKey) {
+    return res.status(403).json({ error: 'Forbidden: Invalid API Key' });
+  }
+
   try {
     const { userId, action, details } = req.body;
 
     if (!userId || !action) {
       return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Walidacja formatu userId aby zapobiec fałszywym kontom (np. 'user33 drop database xd')
+    if (typeof userId !== 'string' || !/^(user\d+|unknown_\d+|user_err_\d+)$/.test(userId)) {
+      return res.status(400).json({ error: 'Invalid userId format' });
+    }
+
+    // Walidacja akcji (zabezpieczenie długości)
+    if (typeof action !== 'string' || action.length > 50) {
+      return res.status(400).json({ error: 'Invalid action format' });
+    }
+
+    // Weryfikacja czy userId istnieje w systemie (czy nie jest z przyszłości)
+    if (userId.startsWith('user')) {
+        try {
+            const currentCounter = await redis.get('user_counter');
+            const userNum = parseInt(userId.replace('user', ''));
+            if (currentCounter && userNum > parseInt(currentCounter) + 10) { // Margines 10 na opóźnienia
+                return res.status(400).json({ error: 'User does not exist' });
+            }
+        } catch (e) {}
+    }
+
+    // Zabezpieczenie przed ogromnymi payloadami
+    if (details) {
+      const detailsStr = JSON.stringify(details);
+      if (detailsStr.length > 5000) { // Limit ~5KB
+        return res.status(400).json({ error: 'Payload too large' });
+      }
+    }
+
+    // Prosty rate-limiting per użytkownik (zapobiega spamowaniu bazy przez boty)
+    try {
+      const rateLimitKey = `ratelimit:log:${userId}`;
+      const requests = await redis.incr(rateLimitKey);
+      if (requests === 1) {
+        await redis.expire(rateLimitKey, 10); // okno 10 sekund
+      }
+      if (requests > 100) {
+        return res.status(429).json({ error: 'Too many requests' });
+      }
+    } catch (err) {
+      console.warn('Rate limit error, continuing...', err);
     }
 
     const logEntry = {

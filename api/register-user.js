@@ -15,15 +15,45 @@ module.exports = async function handler(req, res) {
     return res.status(200).end();
   }
 
+  // --- ZABEZPIECZENIE: RATE LIMITING ---
+  try {
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+    const globalLimitKey = 'ratelimit:register:global';
+    const ipLimitKey = `ratelimit:register:ip:${ip}`;
+
+    // Globalny limit: 50 rejestracji na minutę
+    const globalCount = await redis.incr(globalLimitKey);
+    if (globalCount === 1) await redis.expire(globalLimitKey, 60);
+    if (globalCount > 50) {
+        return res.status(429).json({ error: 'Global registration limit reached. Try again later.' });
+    }
+
+    // Limit na IP: 10 rejestracji na godzinę
+    const ipCount = await redis.incr(ipLimitKey);
+    if (ipCount === 1) await redis.expire(ipLimitKey, 3600);
+    if (ipCount > 10) {
+        return res.status(429).json({ error: 'Too many registrations from this IP. Try again in an hour.' });
+    }
+  } catch (rlError) {
+    console.error('Rate limit error:', rlError);
+  }
+  // -------------------------------------
+
   try {
     let count;
     try {
       count = await redis.incr('user_counter');
+      // Jeśli licznik jest mniejszy niż 200, ustawiamy go na 200
+      if (count < 200) {
+        await redis.set('user_counter', 200);
+        count = 200;
+      }
     } catch (err) {
       // Jeśli incr nie działa (bo np. w kluczu jest obiekt JSON zamiast liczby)
       console.warn('Incr failed, resetting counter');
       await redis.del('user_counter');
-      count = await redis.incr('user_counter');
+      await redis.set('user_counter', 200);
+      count = 200;
     }
 
     const userId = `user${count}`;

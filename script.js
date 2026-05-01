@@ -51,7 +51,10 @@ async function logAction(action, details) {
     try {
         await fetch('/api/log', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-API-Key': 'TwojKluczAPI123' // Ten klucz musi być zgodny z API_SECRET_KEY na serwerze
+            },
             body: JSON.stringify({ userId, action, details })
         });
     } catch (err) {

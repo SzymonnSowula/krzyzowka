@@ -23,6 +23,12 @@ app.get('/api/register-user', (req, res) => {
         const data = fs.readFileSync(COUNTER_FILE, 'utf8');
         const counter = JSON.parse(data);
         counter.count += 1;
+        
+        // Zapewnienie, że startujemy od 200
+        if (counter.count < 200) {
+            counter.count = 200;
+        }
+        
         fs.writeFileSync(COUNTER_FILE, JSON.stringify(counter, null, 2));
         res.json({ userId: `user${counter.count}` });
     } catch (error) {
@@ -31,7 +37,20 @@ app.get('/api/register-user', (req, res) => {
 });
 
 app.post('/api/log', (req, res) => {
-    const logEntry = { timestamp: new Date().toISOString(), ...req.body };
+    const { userId, action, details } = req.body;
+    
+    // Podstawowa walidacja (analogicznie do wersji serwerowej)
+    if (!userId || !action) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
+    if (typeof userId !== 'string' || !/^(user\d+|unknown_\d+|user_err_\d+)$/.test(userId)) {
+        return res.status(400).json({ error: 'Invalid userId format' });
+    }
+    if (typeof action !== 'string' || action.length > 50) {
+        return res.status(400).json({ error: 'Invalid action format' });
+    }
+
+    const logEntry = { timestamp: new Date().toISOString(), userId, action, details };
     try {
         const data = fs.readFileSync(LOG_FILE, 'utf8');
         const logs = JSON.parse(data);

@@ -15,6 +15,15 @@ module.exports = async function handler(req, res) {
     return res.status(200).end();
   }
 
+  // Zabezpieczenie hasłem
+  const authHeader = req.headers.authorization;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+
+  if (adminPassword && authHeader !== adminPassword) {
+    console.warn('Unauthorized access attempt to /api/logs');
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   try {
     let logs = [];
     

@@ -1,0 +1,151 @@
+[
+  {
+    "timestamp": "2026-04-30T22:17:07.327Z",
+    "userId": "user33",
+    "action": "demographics_collected",
+    "details": {
+      "ageGroup": "30-45",
+      "isSenior": false,
+      "timestamp": "2026-04-30T22:14:04.744Z"
+    }
+  },
+  {
+    "timestamp": "2026-04-30T22:17:30.157Z",
+    "userId": "user33",
+    "action": "demographics_collected",
+    "details": {
+      "ageGroup": "trzeba walidowac ",
+      "isSenior": false,
+      "timestamp": "2026-04-30T22:14:04.744Z"
+    }
+  },
+  {
+    "timestamp": "2026-04-30T22:17:38.806Z",
+    "userId": "user33",
+    "action": "demographics_collected",
+    "details": {
+      "ageGroup": "drop database xd",
+      "isSenior": false,
+      "timestamp": "2026-04-30T22:14:04.744Z"
+    }
+  },
+  {
+    "timestamp": "2026-04-30T22:17:54.715Z",
+    "userId": "s",
+    "action": "demographics_collected",
+    "details": {
+      "ageGroup": "drop database xd",
+      "isSenior": false,
+      "timestamp": "2026-04-30T22:14:04.744Z"
+    }
+  },
+  {
+    "timestamp": "2026-04-30T22:18:09.466Z",
+    "userId": "s",
+    "action": "demographics_collected",
+    "details": {
+      "ageGroup": "1",
+      "isSenior": false,
+      "timestamp": "2026-04-30T22:14:04.744Z"
+    }
+  },
+  {
+    "timestamp": "2026-04-30T22:18:33.340Z",
+    "userId": "'waldek'",
+    "action": "demographics_collected",
+    "details": {
+      "ageGroup": "1",
+      "isSenior": false,
+      "timestamp": "2026-04-30T22:14:04.744Z"
+    }
+  },
+  {
+    "timestamp": "2026-04-30T22:18:48.315Z",
+    "userId": "'waldek'",
+    "action": "demographics_collected",
+    "details": {
+      "ageGroup": "-222",
+      "isSenior": false,
+      "timestamp": "2026-04-30T22:14:04.744Z"
+    }
+  },
+  {
+    "timestamp": "2026-04-30T22:19:13.860Z",
+    "userId": "'waldek'",
+    "action": "demographics_collected",
+    "details": {
+      "ageGroup": "-100000000000000000000000000",
+      "isSenior": false,
+      "timestamp": "2026-04-30T22:14:04.744Z"
+    }
+  },
+  {
+    "timestamp": "2026-04-30T22:19:24.073Z",
+    "userId": "'waldek'",
+    "action": "demographics_collected",
+    "details": {
+      "ageGroup": "-1000000000000000000000000000",
+      "isSenior": false,
+      "timestamp": "jjjjj"
+    }
+  },
+  {
+    "timestamp": "2026-04-30T22:20:28.134Z",
+    "userId": "'waldek'",
+    "action": "form_validation69",
+    "details": {
+      "ageGroup": "-1000000000000000000000000000",
+      "what": true,
+      "isSenior": false,
+      "timestamp": "jjjjj"
+    }
+  },
+  {
+    "timestamp": "2026-04-30T22:20:29.119Z",
+    "userId": "pozdrawiam",
+    "action": "pozdrawiam"
+  },
+  {
+    "timestamp": "2026-04-30T22:20:45.626Z",
+    "userId": "'waldek'",
+    "action": "form_validation69",
+    "details": {
+      "ageGroup": "-1000000000000000000000000000",
+      "co to za pole?": true,
+      "isSenior": false,
+      "timestamp": "jjjjj"
+    }
+  },
+  {
+    "timestamp": "2026-04-30T22:21:48.123Z",
+    "userId": "'waldek'",
+    "action": "form_validation69",
+    "details": {
+      "ageGroup": "[1]",
+      "co to za pole?": true,
+      "isSenior": false,
+      "timestamp": "jjjjj"
+    }
+  },
+  {
+    "timestamp": "2026-04-30T22:25:05.716Z",
+    "userId": {
+      "$ne": null
+    },
+    "action": "word_completed"
+  },
+  {
+    "timestamp": "2026-04-30T22:40:16.478Z",
+    "userId": [
+      "to",
+      "nie",
+      "powinien",
+      "być",
+      "array"
+    ],
+    "action": {
+      "$unexpected": 1
+    },
+    "details": null
+  }
+]

@@ -29,7 +29,24 @@ async function loadData() {
     refreshBtn.disabled = true;
 
     try {
-        const response = await fetch('/api/logs');
+        let password = localStorage.getItem('admin_password');
+        if (!password) {
+            password = prompt('Podaj hasło administratora:');
+            if (password) localStorage.setItem('admin_password', password);
+        }
+
+        const response = await fetch('/api/logs', {
+            headers: {
+                'Authorization': password
+            }
+        });
+        
+        if (response.status === 401) {
+            localStorage.removeItem('admin_password');
+            alert('Błędne hasło!');
+            return;
+        }
+
         if (!response.ok) throw new Error('Błąd pobierania danych z API');
         
         rawLogs = await response.json();
