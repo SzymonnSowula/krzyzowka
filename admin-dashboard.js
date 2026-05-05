@@ -454,15 +454,6 @@ function processData() {
         tension: 0.1,
         fill: false
     }]);
-
-    createChart('typingSpeedChart', 'line', wordsOverTime.map(w => w.word || '?'), [{
-        label: 'Typing Speed (ms)',
-        data: wordsOverTime.map(w => w.typingSpeedMs || 0),
-        borderColor: '#22c55e',
-        borderWidth: 3,
-        tension: 0.1,
-        fill: false
-    }]);
 }
 
 function createChart(canvasId, type, labels, datasets, extraOptions = {}) {
